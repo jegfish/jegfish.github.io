@@ -17,8 +17,8 @@ let rec int_range first last =
   else
     Cons (first, fun () -> int_range (first + 1) last)
 
-(* Returns a list of the first [n] elements of [ll]. If [n] greater than the
-   length of [ll], returns [ll] as a regular list. *)
+(* Returns a regular list of the first [n] elements of [ll]. If [n] greater than
+   the length of [ll], returns [ll] as a regular list. *)
 let rec take n ll =
   if n = 0 then
     []
