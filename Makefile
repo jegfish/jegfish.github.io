@@ -9,7 +9,7 @@ all: build-site
 
 .PHONY: build-site
 build-site: build-content
-	hugo --minify --cleanDestinationDir
+	hugo --destination "./docs/" --minify --cleanDestinationDir
 
 .PHONY: build-content
 build-content:
