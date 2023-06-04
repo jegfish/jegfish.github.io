@@ -20,6 +20,11 @@ build-content:
 serve:
 	hugo server --buildDrafts
 
+# Run this when clone the repo.
+.PHONY: setup
+setup:
+	git submodule update --init --recursive
+
 .PHONY: update-themes
 update-themes:
-	cd themes/PaperMod && git pull
+	git submodule update --remote --merge
