@@ -1,0 +1,9 @@
+* Sources
+** Math typesetting
+https://adityatelange.github.io/hugo-PaperMod/posts/math-typesetting/
+** Make a non-blog post
+https://github.com/adityatelange/hugo-PaperMod/issues/26#issuecomment-704321127
+
+Technically it's easy to make a non-blog post, but the part I couldn't figure out was not showing name/publish date.
+
+This is accomplished with the =hidemeta: true= configuration option.

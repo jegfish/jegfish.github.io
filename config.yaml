@@ -1,0 +1,38 @@
+baseURL: "https://jeffreyfisher.net/"
+languageCode: "en-us"
+title: "Jeffrey Fisher"
+
+theme: "PaperMod"
+
+# Theme parameters
+params:
+  defaultTheme: "auto"
+  showReadingTime: true
+  showToc: true
+  showCodeCopyButtons: true
+
+outputs:
+  home:
+    - "HTML"
+    - "RSS"
+    - "JSON"
+
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+menu:
+  main:
+    - name: "About"
+      weight: 1
+      url: "about/"
+    - name: "Blog"
+      weight: 2
+      url: "posts/"
+    - name: "Archives"
+      weight: 3
+      url: "archives/"
+    - name: "Search"
+      weight: 4
+      url: "search/"

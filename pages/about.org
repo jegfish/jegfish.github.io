@@ -1,0 +1,5 @@
+#+TITLE: About
+#+AUTHOR: Jeffrey Fisher
+#+HUGO_SECTION: /
+#+HUGO_BASE_DIR: ..
+#+hugo_custom_front_matter: :hidemeta true
