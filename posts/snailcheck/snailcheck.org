@@ -7,7 +7,7 @@
 :PROPERTIES:
 :header-args: :tangle 01/chapter-01.ml :noweb strip-export
 :EXPORT_FILE_NAME: snailcheck_laziness-from-scratch-in-ocaml
-:EXPORT_DATE: 2023-06-01
+:EXPORT_DATE: 2023-06-04
 :END:
 
 ** :noexport:
