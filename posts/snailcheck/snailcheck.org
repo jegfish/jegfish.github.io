@@ -3,7 +3,7 @@
 #+hugo_base_dir: ../../
 #+hugo_custom_front_matter: :math true
 
-* TODO SnailCheck: Laziness from scratch in OCaml
+* SnailCheck: Laziness from scratch in OCaml
 :PROPERTIES:
 :header-args: :tangle 01/chapter-01.ml :noweb strip-export
 :EXPORT_FILE_NAME: snailcheck_laziness-from-scratch-in-ocaml

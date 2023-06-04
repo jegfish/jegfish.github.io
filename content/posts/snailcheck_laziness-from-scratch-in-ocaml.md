@@ -2,7 +2,7 @@
 title = "SnailCheck: Laziness from scratch in OCaml"
 author = ["Jeffrey Fisher"]
 date = 2023-06-01
-draft = true
+draft = false
 math = true
 +++
 
