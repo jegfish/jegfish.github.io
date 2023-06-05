@@ -283,8 +283,6 @@ For the rest of the series I will use the built-in =Lazy.t=.
 
 OCaml also has built-in library for delayed lists, [[https://v2.ocaml.org/api/Seq.html][Seq]]. I will not use it in this article series because we will encounter an interesting problem from using our own lazy lists.
 
-# TODO: Maybe write my own lazy implementation that does memoization.
-
 *** TODO Benchmark using Lazy.t vs using unit -> 'a. :noexport:
 Also maybe benchmark using built-in Seq. Maybe I'll do a split like PearlCheck, where LeanCheck is a separate library written on its own. Idk if PearlCheck created LeanCheck though. But what I mean is maybe write self-contained posts to describe making a simple PBT library from scratch, then write my own using Seq and Lazy.t if they turn out to be better or for the sake of extra compatiblity and not remaking stuff.
 
