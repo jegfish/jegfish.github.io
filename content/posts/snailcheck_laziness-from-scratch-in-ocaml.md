@@ -1,12 +1,14 @@
 +++
 title = "SnailCheck: Laziness from scratch in OCaml"
 author = ["Jeffrey Fisher"]
-date = 2023-06-01
+date = 2023-06-04
 draft = false
 math = true
 +++
 
 ##  {#d41d8c}
+
+Note: You do not need to be well versed in OCaml or property-based testing to understand this article. I believe the core idea should apply to any language with closures.
 
 I will be taking you through the design of an enumerative property-based testing (PBT) library, inspired by PearlCheck&nbsp;[^fn:1] and [LeanCheck](https://hackage.haskell.org/package/leancheck). Like them, SnailCheck's main focus is on being easy to understand. One reason I am doing this is to develop a deeper understanding of the details that PearlCheck (rightfully) skips.
 

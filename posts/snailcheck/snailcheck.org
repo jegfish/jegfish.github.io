@@ -28,6 +28,8 @@ For whatever reason multiple noweb references, one on each line, results in extr
 *** TODO Get help with the noweb references leaving extra blank lines in the export
 
 ** 
+Note: You do not need to be well versed in OCaml or property-based testing to understand this article. I believe the core idea should apply to any language with closures.
+
 I will be taking you through the design of an enumerative property-based testing (PBT) library, inspired by PearlCheck [fn:pearlcheck] and [[https://hackage.haskell.org/package/leancheck][LeanCheck]]. Like them, SnailCheck's main focus is on being easy to understand. One reason I am doing this is to develop a deeper understanding of the details that PearlCheck (rightfully) skips.
 
 Our first stop will be laziness.
