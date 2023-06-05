@@ -1,7 +1,19 @@
 #+AUTHOR: Jeffrey Fisher
+#+filetags: snailcheck ocaml
 
 #+hugo_base_dir: ../../
 #+hugo_custom_front_matter: :math true
+
+* todolist :noexport:
+
+** IDEA Potentially make this a literate program
+I've decided to use OCaml's built-in =Lazy.t= type after chapter 1. Maybe after I write the 1 or 2 chapters I'll decide to do the same thing with =Seq=.
+
+Once I reach Chapter 2 or 3, and make that decision, maybe I'll decide to turn this into a literate program for the actual SnailCheck library.
+
+If not that's fine too. Also the blog post style is potentially different from standard literate programming style.
+
+A standard literate program does do a lot of explaining (I assume), but they tend to cover the actual code and not simplified-but-inefficient code (I assume).
 
 * SnailCheck: Laziness from scratch in OCaml
 :PROPERTIES:
@@ -285,20 +297,60 @@ There's also Seq.product for making tuples.
 ** Sources
 I learned how lazy lists worked from the [[https://cs3110.github.io/textbook/chapters/ds/sequence.html][Cornell CS 3110 textbook]], and my explanation of enumerating naturals ended up being essentially the same as the CS 3110 one.
 
-* TODO SnailCheck: Chapter 2
+* TODO SnailCheck: Enumerating types
 :PROPERTIES:
 :EXPORT_FILE_NAME: snailcheck_chapter-2
 :EXPORT_TITLE: SnailCheck: Chapter 2
 :EXPORT_DATE: 2023-05-28
 :END:
 
-Blah blah blah.
+We've already seen the enumeration of the natural numbers.
 
-* TODO SnailCheck: Chapter 3
-:PROPERTIES:
-:EXPORT_FILE_NAME: snailcheck_chapter-3
-:EXPORT_TITLE: SnailCheck: Chapter 3
-:EXPORT_DATE: 2023-05-29
-:END:
+** TODO Mention that for integers we could do it without =interleave=
+Could define a function for incrementing and alternating sign. However the code ends up being less elegant, and =interleave= comes in handy a lot and especially for ADTs.
 
-THis is chapter 3.
+Maybe this can be a footnote. Not sure if I want to show actual code for doing so. Maybe I'll write it out and decide based on how long it is.
+
+#+begin_src haskell :tangle no
+  ints' n = n : (-n) : (ints' $ n + 1)
+  ints = 0 : (ints' 1)
+#+end_src
+
+** TODO ? Enumerating algebraic data types (ADT)
+This may go in chapter 3. Decide based on how long (how many words / estimated reading time) chapter 2 ends up being.
+
+On the one hand, would be nice to put all the type enumeration together. On the other hand, it could be nice to have a short and sweet post that describes the problem with a non-lazy =interleave=.
+
+* TODO SnailCheck: Upcoming
+
+** TODO Show the recursive ADT ordering problem
+When using =list= instead of =tiers=, when writing the definition for an ADT you must specify the non-recursive cases before the recursive cases, even with lazy =interleave=. Otherwise you get infinite recursion.
+
+I'm not sure yet whether I want to describe how to fix this problem (and the unfair enumeration) with =tiers=, or if I just want to point people to PearlCheck.
+
+*** TODO Mention that this occurs in Haskell/PearlCheck as well
+I'm pretty sure PearlCheck doesn't mention/demonstrate it, but if you copy the code up to before =tiers= you get the same issue.
+
+*** TODO If describe =tiers=, make sure we support mutually recursive types
+
+** TODO Maybe: Restructuring to use =tiers= instead of =list=
+
+** TODO Maybe: PBT functions
+Stuff like LeanCheck or QuickCheck has.
+
+- =exists= aka =search=
+- =holds=
+- =checkFor=
+
+Not sure exactly what I'll want as I do want a QCheck-compatible interface.
+
+** TODO Maybe: QCheck-compatible interface
+Pretty sure I do want this in the library, but not sure if I want to cover it in the blog posts.
+
+*** IDEA Combined QCheck and SnailCheck
+Can have multiple tests in the same file that use one or the other based on which is best.
+
+For example if you want an existence test, you'd use SnailCheck.
+
+Then can also have a QCheck-compatible interface, so that you can just rename a module alias/import at the top of the file and switch all the QCheck-compatible (non existence, don't require enumeration) tests to SnailCheck or QCheck, back-and-forth with a one-line change.
+
