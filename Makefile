@@ -5,14 +5,14 @@ BASE_DIR := "$(shell pwd)/posts"
 BUILD_CONTENT_CMD := emacs -Q --batch --load "$$PWD/makefile.el" --execute "(build/export-all)"
 
 .PHONY: all
-all: build-site
+all: site
 
-.PHONY: build-site
-build-site: build-content
+.PHONY: site
+site: content
 	hugo --destination "./docs/" --minify --cleanDestinationDir
 
-.PHONY: build-content
-build-content:
+.PHONY: content
+content:
 	BASE_DIR="$(shell pwd)/posts" $(BUILD_CONTENT_CMD)
 	BASE_DIR="$(shell pwd)/pages" $(BUILD_CONTENT_CMD)
 
