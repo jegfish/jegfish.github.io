@@ -2,4 +2,10 @@
 #+AUTHOR: Jeffrey Fisher
 #+HUGO_SECTION: /
 #+HUGO_BASE_DIR: ..
-#+hugo_custom_front_matter: :hidemeta true
+#+hugo_custom_front_matter: :hidemeta true :showtoc false
+
+* Contact
+
+** Email
+=jeffrey@jeffreyfisher.net= ([[mailto:jeffrey@jeffreyfisher.net][mailto link]])
+
