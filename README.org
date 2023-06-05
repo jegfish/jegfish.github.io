@@ -23,6 +23,15 @@ If it's a pain, not gonna try too hard on this one.
 ** TODO Setup tag list page
 https://discourse.gohugo.io/t/how-to-get-a-tags-page/24213/2
 
+* Bug log
+
+** 2023-06-05 GitHub Actions runner returns success, but get 404
+Actions runner logs also seem to be fine.
+
+I notice in the Pages settings that the custom domain field is empty, though the custom domain is setup.
+
+*** Attempt: Fill out the custom domain field and rerun Action
+
 * Sources
 ** Math typesetting
 https://adityatelange.github.io/hugo-PaperMod/posts/math-typesetting/
