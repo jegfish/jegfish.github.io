@@ -10,6 +10,9 @@ all: site
 .PHONY: site
 site: content
 	hugo --destination "./docs/" --minify --cleanDestinationDir
+# Restore CNAME file that is destroyed by Hugo. It is necessary for
+# GitHub Pages to work.
+	[ -f 'docs/CNAME' ] || echo -n 'jeffreyfisher.net' > docs/CNAME
 
 .PHONY: content
 content:

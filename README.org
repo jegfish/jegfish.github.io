@@ -31,6 +31,11 @@ Actions runner logs also seem to be fine.
 I notice in the Pages settings that the custom domain field is empty, though the custom domain is setup.
 
 *** Attempt: Fill out the custom domain field and rerun Action
+Success.
+
+I believe the problem was that the =CNAME= file disappeared. It is stored in the =docs/= directory. I will try ensuring that the CNAME file exists using Makefile. It gets deleted when I run the Hugo build.
+
+This seems to fix it.
 
 * Sources
 ** Math typesetting
