@@ -6,6 +6,22 @@ Then, initialize:
 #+begin_src sh
   make setup
 #+end_src
+* todolist
+** TODO Build PDFs
+*** TODO Build PDFs
+*** TODO Build collated PDF of all pages
+At least all articles. If possible also other pages like About.
+
+*** TODO Add link to all pages to get PDF version of it
+Part of a template so don't have to manually write it on all the pages.
+
+At least have this thing show up on blog posts.
+
+** TODO Try to get RSS to include full articles
+If it's a pain, not gonna try too hard on this one.
+
+** TODO Setup tag list page
+https://discourse.gohugo.io/t/how-to-get-a-tags-page/24213/2
 
 * Sources
 ** Math typesetting
