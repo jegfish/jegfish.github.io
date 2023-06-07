@@ -11,6 +11,17 @@ params:
   showToc: true
   showCodeCopyButtons: true
 
+  homeInfoParams:
+    Title: "Jeffrey Fisher's Website and Blog"
+    Content: |
+      email: `jeffrey@jeffreyfisher.net` ([mailto link](mailto:jeffrey@jeffreyfisher.net))
+
+  socialIcons:
+    - name: "rss"
+      url: "/index.xml"
+    - name: "github"
+      url: "https://github.com/jegfish"
+
 outputs:
   home:
     - "HTML"
@@ -24,15 +35,18 @@ markup:
 
 menu:
   main:
-    - name: "About"
-      weight: 1
-      url: "about/"
-    - name: "Blog"
+    # - name: "About"
+    #   weight: 1
+    #   url: "about/"
+    # - name: "Blog"
+    #   weight: 2
+    #   url: "posts/"
+    - name: "Projects"
       weight: 2
-      url: "posts/"
-    - name: "Archives"
+      url: "projects/"
+    - name: "Archive"
       weight: 3
-      url: "archives/"
+      url: "archive/"
     - name: "Search"
       weight: 4
       url: "search/"
