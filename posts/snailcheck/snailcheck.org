@@ -124,7 +124,7 @@ Functions! If you define a function with an infinite loop, it won't actually fre
 We will represent lazy values with the type =unit -> 'a=, a function that takes one argument of type =unit=, and returns our value. =unit= is a special type that only has one value, which is also called "unit" and is written as empty paired parentheses, =()=. The argument to our lazy values carries no information, it's more of an implementation detail. Really the intention is a function that takes no arguments, but this is not possible in OCaml.
 
 #+begin_src ocaml
-type 't delayed = unit -> 't
+  type 't delayed = unit -> 't
 #+end_src
 
 A more standard name for "delayed" would be [[https://en.wikipedia.org/wiki/Thunk][thunk]].
@@ -181,7 +181,7 @@ This code is basically what we want, but we'll need to create our own type to re
 
 ** Lazy lists
 #+begin_src ocaml
-type 'a lazylist = Nil | Cons of 'a * 'a lazylist delayed
+  type 'a lazylist = Nil | Cons of 'a * 'a lazylist delayed
 #+end_src
 
 Each element of the list contains its own value, and a lazy value representing the next element in the list. This allows us to process one value at a time.
@@ -215,7 +215,7 @@ The above examples explicitly specify finite lists. If we have a large (but stil
 Now we can dynamically represent an arbitrary range of numbers. We could write it out explicitly, but it would take up more memory because the whole thing is evaluated at once; and of course this way has a lot less typing.
 
 #+begin_src ocaml :tangle no :exports both
-  <<ch01-import>>
+  <<chp01-import>>
   let one_to_twenty = int_range 1 20
 #+end_src
 
@@ -295,29 +295,142 @@ There's also Seq.product for making tuples.
 ** Sources
 I learned how lazy lists worked from the [[https://cs3110.github.io/textbook/chapters/ds/sequence.html][Cornell CS 3110 textbook]], and my explanation of enumerating naturals ended up being essentially the same as the CS 3110 one.
 
-* TODO SnailCheck: Enumerating types
+* SnailCheck: Generating values by enumeration
 :PROPERTIES:
-:EXPORT_FILE_NAME: snailcheck_chapter-2
-:EXPORT_TITLE: SnailCheck: Chapter 2
-:EXPORT_DATE: 2023-05-28
+:EXPORT_FILE_NAME: snailcheck_enumerating-types
+:EXPORT_TITLE: SnailCheck: Enumerating types
+:EXPORT_DATE: 2023-06-07
+:EXPORT_HUGO_DRAFT: true
+:header-args: :tangle 02/chapter-02.ml :noweb strip-export :results verbatim
 :END:
 
-We've already seen the enumeration of the natural numbers.
-
-** TODO Mention that for integers we could do it without =interleave=
-Could define a function for incrementing and alternating sign. However the code ends up being less elegant, and =interleave= comes in handy a lot and especially for ADTs.
-
-Maybe this can be a footnote. Not sure if I want to show actual code for doing so. Maybe I'll write it out and decide based on how long it is.
-
-#+begin_src haskell :tangle no
-  ints' n = n : (-n) : (ints' $ n + 1)
-  ints = 0 : (ints' 1)
+** :noexport:
+#+name: chp02-import
+#+begin_src ocaml :tangle no
+  #use "01/chapter-01.ml";;
+  #use "02/chapter-02.ml";;
 #+end_src
+
+#+name: chp02-extra
+#+begin_src ocaml :tangle no
+  <<chp02-import>>
+  #use "02/extra.ml";;
+#+end_src
+
+** 
+[[file:/posts/snailcheck_laziness-from-scratch-in-ocaml][Previous post in this series]].
+
+In the previous post we saw the enumeration of the natural numbers. Now we will learn to enumerate more complex types.
+
+** Enumerating booleans
+Enumerating booleans is simpler than the naturals, but it's worth seeing. We'll make a convenience function for converting a regular list to a lazy list; it will also be useful for testing and for enumerating other types with few values.
+
+#+begin_src ocaml
+  let rec of_list xs =
+    match xs with
+    | [] -> Nil
+    | x::xs -> Cons (x, fun () -> of_list xs)
+#+end_src
+
+#+begin_src ocaml
+  let bool : bool lazylist = of_list [true; false]
+#+end_src
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 2 bool
+#+end_src
+
+#+RESULTS:
+: - : bool list = [true; false]
+
+Note: We are doing some punning here to allow conciseness. [fn:pun] When used in types "bool" will still refer to the the standard boolean type. But when used in expressions "bool" means this particular lazy list.
+
+[fn:pun] We're also doing punning because [[https://c-cube.github.io/qcheck/][QCheck]] does it that way, and we want to be compatible with QCheck.
+
+** Enumerating integers
+*** Problem
+Listing the integers is non-obvious because unlike the naturals there is no "starting point". In math you can discuss the range \((-\infty, \infty)\), but we can't start at negative infinity.
+
+OCaml's =int= type does technically have a starting point, =min_int=, which seems to be \(-2^{62}\). Maybe we could do =let int = up_from min_int=? There are a few problems with this:
+
+1. For a while all you'll be seeing is negative numbers with a large magnitude. It's easier to work with smaller numbers, and we also want to check zero and positive numbers. One of the benefits of enumerative property-based testing is trying the simplest cases first---with random generation you tend to get huge test values that need to be "shrinked".
+2. "a while" is probably longer than a human lifespan. Rough calculations with a 5 millisecond time per check gave me an 11-digit number of /years/. A quick Internet search says even just incrementing a counter from 0 to 2^{64} (not even checking properties) would take around 100 years.
+3. Sometimes we may want to use a special integer type that can represent arbitrarily-large integers. Then there will be no such thing as =min_int=.
+
+*** Solution
+There is a way to arrange the integers that gives them a starting point and gives the simplest cases first: \(0, -1, 1, -2, 2, -3, 3, \ldots\) [fn:well-ordering]
+
+We could express this as a single generator function like we did with the naturals:
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  let int : int lazylist =
+    let rec ints' n =
+      Cons (-n, fun () ->
+               Cons (n, fun () -> ints' (n + 1))) in
+    Cons (0, fun () -> ints' 1)
+  ;;
+
+  take 9 int
+#+end_src
+
+#+RESULTS:
+: - : int list = [0; -1; 1; -2; 2; -3; 3; -4; 4]
+
+However, we will express it in a way that I feel is more elegant. It will be useful to examine this technique with the integers first, because we will need it for more complex types later.
+
+\[\mathbb{Z} = \mathbb{N} \cup \{-1, -2, -3, \ldots\}\]
+
+We can break the integers into pieces. If we combine the natural numbers and the negative integers, we get the set of all integers.
+
+The common way to combine lists is appending.
+
+#+begin_src ocaml :tangle 02/extra.ml
+  let rec append xs ys =
+    match xs, ys with
+    | Nil, ys -> ys
+    | Cons (x, xs), ys ->
+       Cons (x, fun () -> append (force xs) ys)
+#+end_src
+
+Let's confirm that our lazy list =append= works:
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-extra>>
+  take 6 @@ append (of_list [1;2;3]) (of_list [4;5;6])
+#+end_src
+
+#+RESULTS:
+: - : int list = [1; 2; 3; 4; 5; 6]
+
+Now let's try making the integers:
+
+#+begin_src ocaml
+  let rec down_from n = Cons (n, fun () -> down_from (n - 1))
+#+end_src
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-extra>>
+  let int = append nats (down_from (-1)) in
+  take 9 @@ int
+#+end_src
+
+#+RESULTS:
+: - : int list = [0; 1; 2; 3; 4; 5; 6; 7; 8]
+
+Oh no, we aren't seeing any negatives!
+
+[fn:well-ordering] Apparently this is called the [[https://en.wikipedia.org/wiki/Well-order#Integers][well-ordering of the integers]]. I'd seen this ordering before, and I recently learned the Well-Ordering Principle, but hadn't seen this aspect. I'm glad to have learned this connection.
 
 ** TODO ? Enumerating algebraic data types (ADT)
 This may go in chapter 3. Decide based on how long (how many words / estimated reading time) chapter 2 ends up being.
 
 On the one hand, would be nice to put all the type enumeration together. On the other hand, it could be nice to have a short and sweet post that describes the problem with a non-lazy =interleave=.
+
+** TODO If don't rely on previous chapter tangled code, maybe break this out into its own directory
+
+** TODO ? Maybe add a link to the top of the previous post pointing to this post
 
 * TODO SnailCheck: Upcoming
 
