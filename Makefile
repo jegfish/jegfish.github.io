@@ -31,3 +31,7 @@ setup:
 .PHONY: update-themes
 update-themes:
 	git submodule update --remote --merge
+
+.PHONY: clean
+clean:
+	rm -rf content docs
