@@ -21,7 +21,7 @@ content:
 
 .PHONY: serve
 serve:
-	hugo server --buildDrafts
+	hugo server --buildDrafts --disableFastRender
 
 # Run this when clone the repo.
 .PHONY: setup
