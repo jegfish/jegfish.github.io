@@ -489,7 +489,7 @@ The key idea is to pair up the first =x= with every =y= in =ylist=, then combine
 
 Note that =pair_with x (force yrest)= actually uses =yrest=, so it skips the first =y=. This is fine though because we have the pairing of =x= and the first =y= with =Cons ((x,y), ...)=.
 
-The =Cons ((x,y), ...)= piece is a bit inelegant, but necessary with the current implementation of =interleave=. Later we will improve the implementation of =interleave=.
+The =Cons ((x,y), ...)= piece is a bit inelegant, but necessary with the current implementation of =interleave=. Later we will solve this issue and clean up =pair=.
 
 #+begin_src ocaml :tangle no :exports both
   <<chp02-import>>
@@ -518,12 +518,146 @@ The =Cons ((x,y), ...)= piece is a bit inelegant, but necessary with the current
 : [(0, 0); (0, -1); (-1, 0); (0, 1); (-1, -1); (0, -2); (1, 0); (0, 2);
 :  (-1, 1); (0, -3)]
 
-** TODO ? Enumerating algebraic data types (ADT)
-This may go in chapter 3. Decide based on how long (how many words / estimated reading time) chapter 2 ends up being.
+We can of course mix different types.
 
-On the one hand, would be nice to put all the type enumeration together. On the other hand, it could be nice to have a short and sweet post that describes the problem with a non-lazy =interleave=.
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 10 @@ pair int bool
+#+end_src
 
-** TODO If don't rely on previous chapter tangled code, maybe break this out into its own directory
+#+RESULTS:
+: - : (int * bool) list =
+: [(0, true); (0, false); (-1, true); (-1, false); (1, true); (1, false);
+:  (-2, true); (-2, false); (2, true); (2, false)]
+
+*** Triples and n-tuples
+Two is a magic number. We can mimic n-tuples using nested pairs.
+
+For example: =(1, (2, 3))=.
+
+#+begin_src ocaml
+  let triple xs ys zs =
+    let triple_of_nest (a, (b, c)) = (a, b, c) in
+    map triple_of_nest (pair xs (pair ys zs))
+#+end_src
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 5 @@ triple int (pair bool int) int
+#+end_src
+
+#+RESULTS:
+: - : (int * (bool * int) * int) list =
+: [(0, (true, 0), 0); (0, (true, 0), -1); (-1, (true, 0), 0);
+:  (0, (true, -1), 0); (-1, (true, 0), -1)]
+
+** Enumerating algebraic data types (ADT)
+Here's an interesting but still simple ADT: a binary tree.
+
+#+begin_src ocaml :tangle 02/extra.ml
+  type 'a tree = Leaf | Branch of 'a * 'a tree * 'a tree
+#+end_src
+
+The enumeration of ADT constructors can be built directly off of tuple enumeration. We enumerate n-tuples, where n is the number of arguments to the constructor, then construct values.
+
+#+begin_src ocaml
+  let cons0 cons = of_list [cons]
+  let cons1 cons a = map cons a
+  let cons2 cons a b = map cons (pair a b)
+  let cons3 cons a b c = map cons (triple a b c)
+#+end_src
+
+In OCaml constructors cannot be passed around like functions, so we will define function wrappers to pass to =consN=.
+
+#+begin_src ocaml :tangle 02/extra.ml
+  let leaf = Leaf;;
+  let branch (v, l, r) = Branch (v, l, r)
+#+end_src
+
+The =branch= function converts an appropriate tuple into a tree branch.
+
+#+begin_src ocaml :tangle 02/extra.ml
+  let rec tree_a typ =
+    cons0 leaf
+    @| cons3 branch typ (tree_a typ) (tree_a typ)
+#+end_src
+
+The type =tree= has two constructors. We start with the simple one, =Leaf=. It is a nullary constructor (no arguments), so we do =cons0 leaf= to enumerate it.
+
+The other constructor is =Branch=, which has 3 parts, so we use =cons3=. The first part is of type ='a=, the type the tree is parameterized by. We have the =typ= argument to take in the enumeration of ='a=, so we do =cons3 branch typ=. The next two parts are both of type tree, so we have =cons3 branch typ (tree_a typ) (tree_a typ)=.
+
+Writing enumerations of algebraic data types is a simple, mechanical process.[fn:mechanical]
+
+Let's check out the result.
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-extra>>
+  take 5 @@ (tree_a int)
+#+end_src
+
+#+RESULTS:
+: Stack overflow during evaluation (looping recursion?).
+
+Turns out I lied a bit. What went wrong?
+
+The top level function in the body of =tree_a= is =@|= (a.k.a. =interleave=). OCaml uses [[https://en.wikipedia.org/wiki/Strict_programming_language][strict evaluation]], so we evaluate the arguments before evaluating the function. The left argument =cons0 leaf= is fine. The problem arises in the right argument, which has recursive calls to =tree_a=.
+
+With recursion it is usually important to have:
+
+1. A base case.
+2. Recursive calls make the input "smaller", approaching the base case.
+3. Conditional that checks whether to perform the base or recursive case.
+
+We have a base case of =cons0 leaf=, but we don't have a conditional. Conditionals are special in that only some of their arguments/branches are evaluated each time, while functions have *all* of their arguments evaluated every time.
+
+The problem is that we are always evaluating the recursive calls in the =cons3= branch, so we recurse infinitely.
+
+[fn:mechanical] That means we can automate the generation of enumerations of algebraic data types!
+
+*** Solution
+Imagine you are =tree_a=. This is roughly the behavior we want:
+
+- I'm giving you the first tree in the enumeration. That's =Leaf=.
+- For the second tree, I'll give you a =Branch=.
+  - To make a branch, I need to make a ='a=. That's easy, I use =typ=.
+  - I also need to make two of ='a tree=. To do that, I make two nested calls of =tree_a typ=.
+    - I'm the first nested call. I'll give you the first tree in the enumeration. That's =Leaf=.
+    - I'm the second nested call. I'll give you the first tree in the enumeration. That's =Leaf=.
+  - I've completed giving =Branch Leaf Leaf=.
+- For the third tree, ...
+
+If we grab the base case (=Leaf=) first, we can manage to build recursive cases (=Branch=).
+
+We can't do this with strict evaluation, so we need to add a bit of laziness. We will rewrite =interleave= so that its arguments are both lazy (=delayed=).
+
+*** IDEA Order (currently) matters
+Remember when I said we needed to grab the base case(s) before the recursive case(s)? With the current code, that's true.
+
+It's also problematic. It's annoying to remember and results in an unhelpful error message.[fn:order-error] What if we want to generate a mutually recursive ADT?
+
+TODO: Mention that this problem also occurs in PearlCheck.
+
+TODO: Are there any mutually recursive data types that don't result in their only possible values being infinite cycles?
+
+TODO: Are we able to generate infinite cycles? Obviously you can explicitly write the enumeration but can we provide a nicer way of doing so?
+
+[fn:order-error]
+If you know of a way to detect the problem and provide a helpful error message, let me know!
+
+Maybe stack overflow is a catchable exception, and could print an error message that suggests that the problem could be the order of the ADT cases. However, I say "suggest" because there could be other reasons for stack overflow; this merely detects a symptom rather than the problem.
+
+I'm thinking proper detection would require some sort of static analysis, maybe could be done with a [[https://ocaml.org/docs/metaprogramming][PPX]].
+
+** TODO Show the recursive ADT ordering problem
+When using =list= instead of =tiers=, when writing the definition for an ADT you must specify the non-recursive cases before the recursive cases, even with lazy =interleave=. Otherwise you get infinite recursion.
+
+I'm not sure yet whether I want to describe how to fix this problem (and the unfair enumeration) with =tiers=, or if I just want to point people to PearlCheck.
+
+*** TODO Mention that this occurs in Haskell/PearlCheck as well
+I'm pretty sure PearlCheck doesn't mention/demonstrate it, but if you copy the code up to before =tiers= you get the same issue.
+
+*** TODO If describe =tiers=, make sure we support mutually recursive types
+
 
 ** TODO ? Maybe add a link to the top of the previous post pointing to this post
 
@@ -538,16 +672,6 @@ Only works with lazy interleave. Make it total, get rid of non-exhausitve patter
     and b = fun () -> pair (force xs) ylist in
     lazy_interleave a b
 #+end_src
-
-** TODO Show the recursive ADT ordering problem
-When using =list= instead of =tiers=, when writing the definition for an ADT you must specify the non-recursive cases before the recursive cases, even with lazy =interleave=. Otherwise you get infinite recursion.
-
-I'm not sure yet whether I want to describe how to fix this problem (and the unfair enumeration) with =tiers=, or if I just want to point people to PearlCheck.
-
-*** TODO Mention that this occurs in Haskell/PearlCheck as well
-I'm pretty sure PearlCheck doesn't mention/demonstrate it, but if you copy the code up to before =tiers= you get the same issue.
-
-*** TODO If describe =tiers=, make sure we support mutually recursive types
 
 ** TODO Maybe: Restructuring to use =tiers= instead of =list=
 

@@ -37,3 +37,12 @@ let rec pair xlist ylist =
            fun () -> pair_with x (force yrest) @| pair (force xrest) ylist)
   | Nil, _ -> Nil
   | _, Nil -> Nil
+
+let triple xs ys zs =
+  let triple_of_nest (a, (b, c)) = (a, b, c) in
+  map triple_of_nest (pair xs (pair ys zs))
+
+let cons0 cons = of_list [cons]
+let cons1 cons a = map cons a
+let cons2 cons a b = map cons (pair a b)
+let cons3 cons a b c = map cons (triple a b c)
