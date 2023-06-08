@@ -471,14 +471,9 @@ First let's gain the ability to map over lazy lists.
 #+RESULTS:
 : - : int list = [0; 1; 4; 9; 16; 25; 36; 49; 64; 81]
 
-TODO: Test implementation of =map= and try writing an elegant =pair_with= with it.
-
 #+begin_src ocaml
   let rec pair_with x ll =
-    match ll with
-    | Nil -> Nil
-    | Cons (y, ys) ->
-       Cons ((x,y), fun () -> pair_with x (force ys))
+    map (fun y -> (x, y)) ll
 
   let rec pair xlist ylist =
     match xlist, ylist with

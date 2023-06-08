@@ -27,10 +27,7 @@ let rec map f xs =
            fun () -> map f (force xs))
 
 let rec pair_with x ll =
-  match ll with
-  | Nil -> Nil
-  | Cons (y, ys) ->
-     Cons ((x,y), fun () -> pair_with x (force ys))
+  map (fun y -> (x, y)) ll
 
 let rec pair xlist ylist =
   match xlist, ylist with
