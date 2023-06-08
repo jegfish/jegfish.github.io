@@ -230,8 +230,6 @@ take 10 nats
 
 OCaml has a [built-in lazy library](https://v2.ocaml.org/api/Lazy.html), which also does "memoization". It remembers the result, so the next time you force the lazy value it quickly returns the stored result. It not only avoids doing work it doesn't have to, it also avoids redoing work it has already done.
 
-For the rest of the series I will use the built-in `Lazy.t`.
-
 OCaml also has built-in library for delayed lists, [Seq](https://v2.ocaml.org/api/Seq.html). I will not use it in this article series because we will encounter an interesting problem from using our own lazy lists.
 
 
