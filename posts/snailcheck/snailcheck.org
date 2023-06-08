@@ -279,8 +279,6 @@ We've already seen the key idea, now we need to translate it to use =lazylist=.
 ** OCaml built-in Lazy
 OCaml has a [[https://v2.ocaml.org/api/Lazy.html][built-in lazy library]], which also does "memoization". It remembers the result, so the next time you force the lazy value it quickly returns the stored result. It not only avoids doing work it doesn't have to, it also avoids redoing work it has already done.
 
-For the rest of the series I will use the built-in =Lazy.t=.
-
 OCaml also has built-in library for delayed lists, [[https://v2.ocaml.org/api/Seq.html][Seq]]. I will not use it in this article series because we will encounter an interesting problem from using our own lazy lists.
 
 *** TODO Benchmark using Lazy.t vs using unit -> 'a. :noexport:
