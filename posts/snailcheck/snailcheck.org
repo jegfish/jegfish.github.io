@@ -15,6 +15,13 @@ If not that's fine too. Also the blog post style is potentially different from s
 
 A standard literate program does do a lot of explaining (I assume), but they tend to cover the actual code and not simplified-but-inefficient code (I assume).
 
+** Maybe don't turn this into a real library
+https://ocamlverse.net/content/testing.html
+
+There are many OCaml libraries that provide various kinds of testing already. The [[https://kaputt.x9c.fr/][Kaputt]] library provides "enumeration-based tests, inspired by the SmallCheck tool", along with
+
+Well, it is worth doing for practice, education, fun, and portfolio purposes. So I'll try doing it anyways. I've not written a big OCaml codebase from scratch before. And it's been a long time since I've written a big project from scratch.
+
 * SnailCheck: Laziness from scratch in OCaml
 :PROPERTIES:
 :header-args: :tangle 01/chapter-01.ml :noweb strip-export
@@ -40,6 +47,8 @@ For whatever reason multiple noweb references, one on each line, results in extr
 *** TODO Get help with the noweb references leaving extra blank lines in the export
 
 ** 
+[[file:/posts/snailcheck_enumerating-types][Next post in this series]].
+
 Note: You do not need to be well versed in OCaml or property-based testing to understand this article. I believe the core idea should apply to any language with closures.
 
 I will be taking you through the design of an enumerative property-based testing (PBT) library, inspired by PearlCheck [fn:pearlcheck] and [[https://hackage.haskell.org/package/leancheck][LeanCheck]]. Like them, SnailCheck's main focus is on being easy to understand. One reason I am doing this is to develop a deeper understanding of the details that PearlCheck (rightfully) skips.
@@ -348,12 +357,12 @@ Note: We are doing some punning here to allow conciseness. [fn:pun] When used in
 
 ** Enumerating integers
 *** Problem
-Listing the integers is non-obvious because unlike the naturals there is no "starting point". In math you can discuss the range \((-\infty, \infty)\), but we can't start at negative infinity.
+Listing the integers is non-obvious because unlike the naturals there is no "starting point". In math you can discuss the range \((-\infty, \infty)\), but in code we can't start at negative infinity.
 
 OCaml's =int= type does technically have a starting point, =min_int=, which seems to be \(-2^{62}\). Maybe we could do =let int = up_from min_int=? There are a few problems with this:
 
 1. For a while all you'll be seeing is negative numbers with a large magnitude. It's easier to work with smaller numbers, and we also want to check zero and positive numbers. One of the benefits of enumerative property-based testing is trying the simplest cases first---with random generation you tend to get huge test values that need to be "shrinked".
-2. "a while" is probably longer than a human lifespan. Rough calculations with a 5 millisecond time per check gave me an 11-digit number of /years/. A quick Internet search says even just incrementing a counter from 0 to 2^{64} (not even checking properties) would take around 100 years.
+2. "a while" is probably longer than a human lifespan. Rough calculations with a 5 millisecond time per check gave me an 11-digit number of /years/. 5 ms is perhaps a long time for executing a function, but even at the nanosecond scale you can't exhaust the integers. A quick Internet search says even just incrementing a counter from 0 to 2^{64} (not even checking properties) would take around 100 years.
 3. Sometimes we may want to use a special integer type that can represent arbitrarily-large integers. Then there will be no such thing as =min_int=.
 
 *** Solution
@@ -438,19 +447,19 @@ If we make a slight change to our =append= function, we can get the behavior we 
 In the recursive call we now swap the position of =xs= and =ys=, so we will get the behavior of alternating which list we grab from.
 
 #+begin_src ocaml :tangle no :exports both
-  <<chp02-import>>
+  <<chp02-extra>>
   take 9 int
 #+end_src
 
 #+RESULTS:
 : - : int list = [0; -1; 1; -2; 2; -3; 3; -4; 4]
 
-[fn:well-ordering] Apparently this is called the [[https://en.wikipedia.org/wiki/Well-order#Integers][well-ordering of the integers]]. I'd seen this ordering before, and I recently learned the Well-Ordering Principle, but hadn't seen this aspect. I'm glad to have learned this connection.
+[fn:well-ordering] Apparently this is called the [[https://en.wikipedia.org/wiki/Well-order#Integers][well-ordering of the integers]]. I'd seen this ordering before, and I recently learned the Well-Ordering Principle, but hadn't made the connection until looking it up just now.
 
 ** Enumerating tuples
 Not all functions deal with simple scalar types. We also want to enumerate structured types, starting with tuples.
 
-First let's gain the ability to map over lazy lists.
+First let's add the ability to map over lazy lists.
 
 #+begin_src ocaml
   let rec map f xs =
@@ -500,7 +509,7 @@ The =Cons ((x,y), ...)= piece is a bit inelegant, but necessary with the current
 : - : (int * int) list = [(42, 1); (42, 2); (42, 3); (42, 4); (42, 5)]
 
 #+begin_src ocaml :tangle no :exports both
-  <<chp02-import>>
+  <<chp02-extra>>
   take 10 @@ pair bool bool
 #+end_src
 
@@ -509,7 +518,7 @@ The =Cons ((x,y), ...)= piece is a bit inelegant, but necessary with the current
 : [(true, true); (true, false); (false, true); (false, false)]
 
 #+begin_src ocaml :tangle no :exports both
-  <<chp02-import>>
+  <<chp02-extra>>
   take 10 @@ pair int int
 #+end_src
 
@@ -521,7 +530,7 @@ The =Cons ((x,y), ...)= piece is a bit inelegant, but necessary with the current
 We can of course mix different types.
 
 #+begin_src ocaml :tangle no :exports both
-  <<chp02-import>>
+  <<chp02-extra>>
   take 10 @@ pair int bool
 #+end_src
 
@@ -610,14 +619,14 @@ With recursion it is usually important to have:
 
 We have a base case of =cons0 leaf=, but we don't have a conditional. Conditionals are special in that only some of their arguments/branches are evaluated each time, while functions have *all* of their arguments evaluated every time.
 
-The problem is that we are always evaluating the recursive calls in the =cons3= branch, so we recurse infinitely.
+The problem is that we are always evaluating the recursive calls in =cons3 branch typ (tree_a typ) (tree_a typ)=, so we recurse infinitely.
 
-[fn:mechanical] That means we can automate the generation of enumerations of algebraic data types!
+[fn:mechanical] That means we can automate the generation of enumerations of algebraic data types! I may write a post about this in the future.
 
 *** Solution
 Imagine you are =tree_a=. This is roughly the behavior we want:
 
-- I'm giving you the first tree in the enumeration. That's =Leaf=.
+- For the first tree, I'll give you a =Leaf=.
 - For the second tree, I'll give you a =Branch=.
   - To make a branch, I need to make a ='a=. That's easy, I use =typ=.
   - I also need to make two of ='a tree=. To do that, I make two nested calls of =tree_a typ=.
@@ -628,52 +637,174 @@ Imagine you are =tree_a=. This is roughly the behavior we want:
 
 If we grab the base case (=Leaf=) first, we can manage to build recursive cases (=Branch=).
 
-We can't do this with strict evaluation, so we need to add a bit of laziness. We will rewrite =interleave= so that its arguments are both lazy (=delayed=).
+We can't do this with strict evaluation, so we need to add a bit of laziness. We will write =lazy_interleave= so that its arguments are both lazy (=delayed=), so we won't get stuck on recursive calls encountered while evaluating the arguments to =lazy_interleave=.[fn:lazy-interleave]
 
-*** IDEA Order (currently) matters
+#+begin_src ocaml
+  let rec lazy_interleave (xs : 'a lazylist delayed) (ys: 'a lazylist delayed) =
+    let xs = force xs in
+    match xs with
+    | Nil -> force ys
+    | Cons (x, xs) ->
+       Cons (x, fun () -> lazy_interleave ys xs)
+
+  let ( @|| ) = lazy_interleave
+#+end_src
+
+Now we can enumerate trees.
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-extra>>
+  let rec tree typ =
+    let a = fun () -> cons0 leaf in
+    let b = fun () -> cons3 branch typ (tree typ) (tree typ) in
+    a @|| b
+  in
+
+  take 3 @@ tree int
+#+end_src
+
+#+RESULTS:
+: - : int tree list =
+: [Leaf; Branch (0, Leaf, Leaf); Branch (0, Leaf, Branch (0, Leaf, Leaf))]
+
+[fn:lazy-interleave]
+There's not much use in keeping the non-lazy version of =interleave= around; I consider it broken. I only gave =lazy_interleave= a new name as a shortcut to appease the literate programming setup I'm using.
+
+*** Order matters
 Remember when I said we needed to grab the base case(s) before the recursive case(s)? With the current code, that's true.
 
-It's also problematic. It's annoying to remember and results in an unhelpful error message.[fn:order-error] What if we want to generate a mutually recursive ADT?
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-extra>>
+  let rec tree_bad typ =
+    let a = fun () -> cons3 branch typ (tree_bad typ) (tree_bad typ) in
+    let b = fun () -> cons0 leaf in
+    a @|| b
+  in
+  take 5 @@ tree_bad int
+#+end_src
 
-TODO: Mention that this problem also occurs in PearlCheck.
+#+RESULTS:
+: Stack overflow during evaluation (looping recursion?).
 
-TODO: Are there any mutually recursive data types that don't result in their only possible values being infinite cycles?
+This is problematic. It's annoying to remember and results in an unhelpful error message.[fn:order-error]
 
-TODO: Are we able to generate infinite cycles? Obviously you can explicitly write the enumeration but can we provide a nicer way of doing so?
+It's not simply a matter of laziness. [[http://jmct.cc/pearlcheck.pdf][PearlCheck]], which is written in the lazy language Haskell, also faces this problem---though it is solved later in the paper.[fn:pearlcheck-order]
+
+It is possible to solve this problem in SnailCheck if we switch from simple enumerated lists to =tiers=, like PearlCheck uses. That may be covered in a later post, but for now you can check out the PearlCheck paper.
 
 [fn:order-error]
 If you know of a way to detect the problem and provide a helpful error message, let me know!
 
 Maybe stack overflow is a catchable exception, and could print an error message that suggests that the problem could be the order of the ADT cases. However, I say "suggest" because there could be other reasons for stack overflow; this merely detects a symptom rather than the problem.
 
-I'm thinking proper detection would require some sort of static analysis, maybe could be done with a [[https://ocaml.org/docs/metaprogramming][PPX]].
+I'm thinking proper detection would require some sort of static analysis. Maybe it could be done with a [[https://ocaml.org/docs/metaprogramming][PPX]].
 
-** TODO Show the recursive ADT ordering problem
-When using =list= instead of =tiers=, when writing the definition for an ADT you must specify the non-recursive cases before the recursive cases, even with lazy =interleave=. Otherwise you get infinite recursion.
+[fn:pearlcheck-order]
+PearlCheck doesn't mention this problem, but if you copy the code up through "Mark II: Algebraic Datatypes" you can reproduce the problem on this example:
 
-I'm not sure yet whether I want to describe how to fix this problem (and the unfair enumeration) with =tiers=, or if I just want to point people to PearlCheck.
+#+begin_src haskell :tangle no
+  instance Listable Expr where
+    -- Different from the one in the paper.
+    -- Recursive case comes first / on the left.
+    list = cons2 Add \/ cons1 Val
 
-*** TODO Mention that this occurs in Haskell/PearlCheck as well
-I'm pretty sure PearlCheck doesn't mention/demonstrate it, but if you copy the code up to before =tiers= you get the same issue.
-
-*** TODO If describe =tiers=, make sure we support mutually recursive types
-
-
-** TODO ? Maybe add a link to the top of the previous post pointing to this post
-
-* TODO SnailCheck: Upcoming
-** TODO Show elegant version of =pair= once get lazy_interleave
-Only works with lazy interleave. Make it total, get rid of non-exhausitve pattern match let.
-
-#+begin_src ocaml
-  let rec pair xlist ylist =
-    let Cons (x, xs) = xs in
-    let a = fun () -> pair_with x ylist
-    and b = fun () -> pair (force xs) ylist in
-    lazy_interleave a b
+  -- Gets stuck here on infinite recursion.
+  take 5 (list :: [Expr])
 #+end_src
 
+The error goes away at "Mark IV: Fair Enumeration" because of the swap from =list= to =tiers=.
+
+** Enumerating lists
+Lists in OCaml are essentially an algebraic data type, so we can enumerate them now.
+
+#+begin_src ocaml
+  let rec list typ =
+    let cons (x, xs) = x :: xs in
+    (fun () -> cons0 [])
+    @|| (fun () -> cons2 cons typ (list typ))
+#+end_src
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 5 @@ list bool
+#+end_src
+
+#+RESULTS:
+: - : bool list list = [[]; [true]; [true; true]; [false]; [true; true; true]]
+
+** Elegant =pair=
+As promised, here is the elegant version of =pair=. This eliminates the =Cons ((x,y), ...)= and expresses it only with =pair_with= and a recursive call.
+
+#+begin_src ocaml :tangle 02/extra.ml
+  let rec elegant_pair xlist ylist =
+    match xlist, ylist with
+    | Cons (x, xrest), Cons (y, yrest) ->
+       (* x paired with every y, then repeat with xrest. *)
+       (fun () -> pair_with x ylist)
+       @|| (fun () -> elegant_pair (force xrest) ylist)
+    | Nil, _ -> Nil
+    | _, Nil -> Nil
+#+end_src
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-extra>>
+  take 10 @@ elegant_pair int int
+#+end_src
+
+#+RESULTS:
+: - : (int * int) list =
+: [(0, 0); (-1, 0); (0, -1); (1, 0); (0, 1); (-1, -1); (0, -2); (-2, 0);
+:  (0, 2); (-1, 1)]
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-extra>>
+  take 10 @@ pair int int
+#+end_src
+
+#+RESULTS:
+: - : (int * int) list =
+: [(0, 0); (0, -1); (-1, 0); (0, 1); (-1, -1); (0, -2); (1, 0); (0, 2);
+:  (-1, 1); (0, -3)]
+
+The order is a bit different, but it's still correct.
+
+** See also
+- As mentioned previously this series is essentially a port of the [[http://jmct.cc/pearlcheck.pdf][PearlCheck]] paper to OCaml, and PearlCheck is definitely worth a read.
+  - PearlCheck is a "tutorial reconstruction" of LeanCheck: https://hackage.haskell.org/package/leancheck
+
+- According to PearlCheck, SmallCheck was the first enumerative PBT tool for Haskell.
+  - Paper: https://www.cs.york.ac.uk/fp/smallcheck/smallcheck.pdf
+  - An implementation: https://github.com/Bodigrim/smallcheck
+
+- Feat: functional enumeration of algebraic types
+  - Paper: https://dl.acm.org/doi/abs/10.1145/2364506.2364515
+    - "Feat provides efficient 'random access' to enumerated values. The primary application is property-based testing, where it is used to define both random sampling (for example QuickCheck generators) and exhaustive enumeration (in the style of SmallCheck)"
+  - An OCaml library inspired by Feat: https://gitlab.inria.fr/fpottier/feat/
+
+- There are a variety of testing frameworks for OCaml. Several of them support some form of property-based testing.
+  - https://ocamlverse.net/content/testing.html
+
+* TODO SnailCheck: Upcoming
+** Potential chapters:
+- Laziness from scratch
+- Enumerating types
+- ? Converting to using tiers
+- ? Automatic generation of enumerators for arbitrary ADTs
+  - Might involve learning PPX, which I'm interested in.
+  - Check out [[https://github.com/ocaml-ppx/ppx_deriving][ppx_deriving]] library
+- ? Enumerators for types with pre and post conditions
+  - PearlCheck covers this a bit.
+  - I want to learn how to do this b/c I'm interested in using property-based testing well, but I'm not sure if I will write a post about this. Will find out later.
+- ? Integrating with testing frameworks and QCheck.
+
+** TODO If describe =tiers=, make sure we support mutually recursive types
+
 ** TODO Maybe: Restructuring to use =tiers= instead of =list=
+
+** TODO
+TODO: Are there any mutually recursive data types that don't result in their only possible values being infinite cycles? Yes: https://en.wikipedia.org/wiki/Recursive_data_type#Mutually_recursive_data_types. However they still have base cases so idk if they'd have trouble here. Maybe the order problem doesn't actually prevent you from doing anything, and is just annoying.
+
+TODO: Are we able to generate infinite cycles? Obviously you can explicitly write the enumeration but can we provide a nicer way of doing so?
 
 ** TODO Maybe: PBT functions
 Stuff like LeanCheck or QuickCheck has.

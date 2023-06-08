@@ -46,3 +46,17 @@ let cons0 cons = of_list [cons]
 let cons1 cons a = map cons a
 let cons2 cons a b = map cons (pair a b)
 let cons3 cons a b c = map cons (triple a b c)
+
+let rec lazy_interleave (xs : 'a lazylist delayed) (ys: 'a lazylist delayed) =
+  let xs = force xs in
+  match xs with
+  | Nil -> force ys
+  | Cons (x, xs) ->
+     Cons (x, fun () -> lazy_interleave ys xs)
+
+let ( @|| ) = lazy_interleave
+
+let rec list typ =
+  let cons (x, xs) = x :: xs in
+  (fun () -> cons0 [])
+  @|| (fun () -> cons2 cons typ (list typ))
