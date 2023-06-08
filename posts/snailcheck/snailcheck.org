@@ -411,15 +411,117 @@ Now let's try making the integers:
 #+begin_src ocaml :tangle no :exports both
   <<chp02-extra>>
   let int = append nats (down_from (-1)) in
-  take 9 @@ int
+  take 9 int
 #+end_src
 
 #+RESULTS:
 : - : int list = [0; 1; 2; 3; 4; 5; 6; 7; 8]
 
-Oh no, we aren't seeing any negatives!
+Oh no, we aren't seeing any negatives! There are infinitely many naturals, so we'll never get to the negatives.
+
+If we make a slight change to our =append= function, we can get the behavior we want.
+
+#+begin_src ocaml
+  let rec interleave xs ys =
+    match xs, ys with
+    | Nil, ys -> ys
+    | Cons (x, xs), ys ->
+       Cons (x, fun () -> interleave ys (force xs))
+           (* Difference: append (force xs) ys *)
+
+  (* Operator form. *)
+  let ( @| ) = interleave
+
+  let int : int lazylist = nats @| (down_from (-1))
+#+end_src
+
+In the recursive call we now swap the position of =xs= and =ys=, so we will get the behavior of alternating which list we grab from.
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 9 int
+#+end_src
+
+#+RESULTS:
+: - : int list = [0; -1; 1; -2; 2; -3; 3; -4; 4]
 
 [fn:well-ordering] Apparently this is called the [[https://en.wikipedia.org/wiki/Well-order#Integers][well-ordering of the integers]]. I'd seen this ordering before, and I recently learned the Well-Ordering Principle, but hadn't seen this aspect. I'm glad to have learned this connection.
+
+** Enumerating tuples
+Not all functions deal with simple scalar types. We also want to enumerate structured types, starting with tuples.
+
+First let's gain the ability to map over lazy lists.
+
+#+begin_src ocaml
+  let rec map f xs =
+    match xs with
+    | Nil -> Nil
+    | Cons (x, xs) ->
+       Cons (f x,
+             fun () -> map f (force xs))
+#+end_src
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  let square x = x * x in
+  let perfect_squares = map square nats in
+  take 10 perfect_squares
+#+end_src
+
+#+RESULTS:
+: - : int list = [0; 1; 4; 9; 16; 25; 36; 49; 64; 81]
+
+TODO: Test implementation of =map= and try writing an elegant =pair_with= with it.
+
+#+begin_src ocaml
+  let rec pair_with x ll =
+    match ll with
+    | Nil -> Nil
+    | Cons (y, ys) ->
+       Cons ((x,y), fun () -> pair_with x (force ys))
+
+  let rec pair xlist ylist =
+    match xlist, ylist with
+    | Cons (x, xrest), Cons (y, yrest) ->
+       (* x paired with every y, interleaved with: pair xs ylist *)
+       Cons ((x,y),
+             fun () -> pair_with x (force yrest) @| pair (force xrest) ylist)
+    | Nil, _ -> Nil
+    | _, Nil -> Nil
+#+end_src
+
+The key idea is to pair up the first =x= with every =y= in =ylist=, then combine that with the pairing of =xrest= with =ylist=.
+
+Note that =pair_with x (force yrest)= actually uses =yrest=, so it skips the first =y=. This is fine though because we have the pairing of =x= and the first =y= with =Cons ((x,y), ...)=.
+
+The =Cons ((x,y), ...)= piece is a bit inelegant, but necessary with the current implementation of =interleave=. Later we will improve the implementation of =interleave=.
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 10 @@ pair_with 42 (of_list [1;2;3;4;5])
+#+end_src
+
+#+RESULTS:
+: - : (int * int) list = [(42, 1); (42, 2); (42, 3); (42, 4); (42, 5)]
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 10 @@ pair bool bool
+#+end_src
+
+#+RESULTS:
+: - : (bool * bool) list =
+: [(true, true); (true, false); (false, true); (false, false)]
+
+#+begin_src ocaml :tangle no :exports both
+  <<chp02-import>>
+  take 10 @@ pair int int
+#+end_src
+
+#+RESULTS:
+: - : (int * int) list =
+: [(0, 0); (0, -1); (-1, 0); (0, 1); (-1, -1); (0, -2); (1, 0); (0, 2);
+:  (-1, 1); (0, -3)]
 
 ** TODO ? Enumerating algebraic data types (ADT)
 This may go in chapter 3. Decide based on how long (how many words / estimated reading time) chapter 2 ends up being.
@@ -431,6 +533,16 @@ On the one hand, would be nice to put all the type enumeration together. On the 
 ** TODO ? Maybe add a link to the top of the previous post pointing to this post
 
 * TODO SnailCheck: Upcoming
+** TODO Show elegant version of =pair= once get lazy_interleave
+Only works with lazy interleave. Make it total, get rid of non-exhausitve pattern match let.
+
+#+begin_src ocaml
+  let rec pair xlist ylist =
+    let Cons (x, xs) = xs in
+    let a = fun () -> pair_with x ylist
+    and b = fun () -> pair (force xs) ylist in
+    lazy_interleave a b
+#+end_src
 
 ** TODO Show the recursive ADT ordering problem
 When using =list= instead of =tiers=, when writing the definition for an ADT you must specify the non-recursive cases before the recursive cases, even with lazy =interleave=. Otherwise you get infinite recursion.
