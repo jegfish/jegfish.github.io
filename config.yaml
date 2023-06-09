@@ -47,6 +47,9 @@ menu:
     - name: "Archive"
       weight: 3
       url: "archive/"
-    - name: "Search"
+    - name: "Tags"
       weight: 4
+      url: "tags/"
+    - name: "Search"
+      weight: 5
       url: "search/"
