@@ -25,7 +25,7 @@ Well, it is worth doing for practice, education, fun, and portfolio purposes. So
 * SnailCheck: Laziness from scratch in OCaml
 :PROPERTIES:
 :header-args: :tangle 01/chapter-01.ml :noweb strip-export
-:EXPORT_FILE_NAME: snailcheck_laziness-from-scratch-in-ocaml
+:EXPORT_FILE_NAME: snailcheck-lazy
 :EXPORT_DATE: 2023-06-04
 :END:
 
@@ -47,7 +47,7 @@ For whatever reason multiple noweb references, one on each line, results in extr
 *** TODO Get help with the noweb references leaving extra blank lines in the export
 
 ** 
-[[file:/posts/snailcheck_enumerating-types][Next post in this series]].
+[[file:/posts/snailcheck-enum][Next post in this series]].
 
 Note: You do not need to be well versed in OCaml or property-based testing to understand this article. I believe the core idea should apply to any language with closures.
 
@@ -304,11 +304,11 @@ I learned how lazy lists worked from the [[https://cs3110.github.io/textbook/cha
 
 * SnailCheck: Generating values by enumeration
 :PROPERTIES:
-:EXPORT_FILE_NAME: snailcheck_enumerating-types
+:EXPORT_FILE_NAME: snailcheck-enum
 :EXPORT_TITLE: SnailCheck: Enumerating types
-:EXPORT_DATE: 2023-06-07
-:EXPORT_HUGO_DRAFT: true
+:EXPORT_DATE: 2023-06-08
 :header-args: :tangle 02/chapter-02.ml :noweb strip-export :results verbatim
+:EXPORT_HUGO_DRAFT: true
 :END:
 
 ** :noexport:
@@ -325,7 +325,7 @@ I learned how lazy lists worked from the [[https://cs3110.github.io/textbook/cha
 #+end_src
 
 ** 
-[[file:/posts/snailcheck_laziness-from-scratch-in-ocaml][Previous post in this series]].
+[[file:/posts/snailcheck-lazy][Previous post in this series]].
 
 In the previous post we saw the enumeration of the natural numbers. Now we will learn to enumerate more complex types.
 
@@ -769,8 +769,11 @@ As promised, here is the elegant version of =pair=. This eliminates the =Cons ((
 The order is a bit different, but it's still correct.
 
 ** See also
-- As mentioned previously this series is essentially a port of the [[http://jmct.cc/pearlcheck.pdf][PearlCheck]] paper to OCaml, and PearlCheck is definitely worth a read.
+This may be the last SnailCheck post, so I'll leave you with some pointers if you're interested in learning more.
+
+- As mentioned previously this series is essentially a port of the [[http://jmct.cc/pearlcheck.pdf][PearlCheck]] paper to OCaml.
   - PearlCheck is a "tutorial reconstruction" of LeanCheck: https://hackage.haskell.org/package/leancheck
+  - So far the SnailCheck posts have covered the parts I struggled to translate to OCaml, but there is a lot more covered by PearlCheck that's worth reading.
 
 - According to PearlCheck, SmallCheck was the first enumerative PBT tool for Haskell.
   - Paper: https://www.cs.york.ac.uk/fp/smallcheck/smallcheck.pdf
