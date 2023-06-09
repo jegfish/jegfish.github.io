@@ -20,9 +20,6 @@ At least have this thing show up on blog posts.
 ** TODO Try to get RSS to include full articles
 If it's a pain, not gonna try too hard on this one.
 
-** TODO Setup tag list page
-https://discourse.gohugo.io/t/how-to-get-a-tags-page/24213/2
-
 * Bug log
 
 ** 2023-06-05 GitHub Actions runner returns success, but get 404
