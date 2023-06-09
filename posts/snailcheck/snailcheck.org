@@ -308,7 +308,6 @@ I learned how lazy lists worked from the [[https://cs3110.github.io/textbook/cha
 :EXPORT_TITLE: SnailCheck: Enumerating types
 :EXPORT_DATE: 2023-06-08
 :header-args: :tangle 02/chapter-02.ml :noweb strip-export :results verbatim
-:EXPORT_HUGO_DRAFT: true
 :END:
 
 ** :noexport:
