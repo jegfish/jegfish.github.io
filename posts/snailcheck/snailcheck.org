@@ -360,7 +360,7 @@ Listing the integers is non-obvious because unlike the naturals there is no "sta
 
 OCaml's =int= type does technically have a starting point, =min_int=, which seems to be \(-2^{62}\). Maybe we could do =let int = up_from min_int=? There are a few problems with this:
 
-1. For a while all you'll be seeing is negative numbers with a large magnitude. It's easier to work with smaller numbers, and we also want to check zero and positive numbers. One of the benefits of enumerative property-based testing is trying the simplest cases first---with random generation you tend to get huge test values that need to be "shrinked".
+1. For a while all you'll be seeing is negative numbers with a large magnitude. It's easier to work with smaller numbers, and we also want to check zero and positive numbers. It's also nice to try the simplest cases first, to hopefully report a failure that is easy to understand.
 2. "a while" is probably longer than a human lifespan. Rough calculations with a 5 millisecond time per check gave me an 11-digit number of /years/. 5 ms is perhaps a long time for executing a function, but even at the nanosecond scale you can't exhaust the integers. A quick Internet search says even just incrementing a counter from 0 to 2^{64} (not even checking properties) would take around 100 years.
 3. Sometimes we may want to use a special integer type that can represent arbitrarily-large integers. Then there will be no such thing as =min_int=.
 

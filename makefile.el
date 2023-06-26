@@ -5,7 +5,9 @@
 (package-initialize)
 (unless package-archive-contents
   (package-refresh-contents))
-;; (require 'use-package)
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(require 'use-package)
 
 (use-package ox-hugo
   :ensure t)
