@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Key-ano</title>
+
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"> -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+    <style type="text/css">
+      html,
+      body {
+          font-family: 'Open Sans';
+      }
+
+      img {
+          padding: 5px;
+          border: 1px solid #ccc;
+      }
+      /* polka dot background black & white */
+/* body {
+    background-image: radial-gradient(#212121 10%, transparent 10%);
+    background-color: white;
+    background-position: 0 0, 10px 10px;
+    background-size: 10px 10px;
+} */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  padding-bottom: 20px;
+}
+
+.button{
+    background-color: white;
+}
+
+.column.button {
+    padding: 5px;
+    margin: 5px;
+}
+
+.mybox {
+    border-width: 5px;
+    border-color: rgba(201, 76, 76, 0.3);
+    box-shadow: 0px 0px 8px 4px red;
+}
+
+#drumPads {
+    padding-top: 40px;
+}
+
+#Loops {
+    padding-bottom: 40px;
+}
+
+.small {
+    font-size: xx-small;
+}
+  /*  box-shadow: 0px 0px 8px 4px red;
+} */
+
+.theme-light {
+  --color-primary: #0060df;
+  --color-secondary: #fbfbfe;
+  --color-accent: #fd6f53;
+  --font-color: #000000;
+
+  --background-color: white;
+  --row-label-font-color: black;
+  --option-button-background-color: white;
+}
+
+.theme-dark {
+  --color-primary: #17ed90;
+  --color-secondary: #2a2c2d;
+  --color-accent: #12cdea;
+  --font-color: #ffffff;
+
+  --background-color: #0a0a0a;
+  --row-label-font-color: white;
+  --option-button-background-color: black;
+}
+
+.button.options {
+    background-color: var(--option-button-background-color);
+    color: var(--font-color);
+}
+
+body {
+    background-color: var(--background-color);
+}
+
+.footer {
+    background-color: var(--background-color);
+    color: var(--font-color);
+}
+
+footer strong {
+    color: var(--font-color);
+}
+
+.row-label {
+    color: var(--row-label-font-color);
+}
+
+.container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  background: var(--color-secondary);
+
+  justify-content: center;
+  align-items: center;
+}
+.container h1 {
+  color: var(--font-color);
+  font-family: sans-serif;
+}
+.container button {
+  color: var(--font-color);
+  background: var(--color-primary);
+  padding: 10px 20px;
+  border: 0;
+  border-radius: 5px;
+}
+
+/* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-right: 10px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 20px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 40px;
+  width: 40px;
+  left: 0px;
+  bottom: 4px;
+  top: 0;
+  bottom: 0;
+  margin: auto 0;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
+  box-shadow: 0 0px 15px #2020203d;
+  background: white url('https://i.ibb.co/FxzBYR9/night.png');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+input:checked + .slider {
+  /*background-color: #2196f3;*/
+  background-image: radial-gradient(#212121 10%, transparent 10%);
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196f3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(24px);
+  -ms-transform: translateX(24px);
+  transform: translateX(24px);
+  background: white url('https://i.ibb.co/7JfqXxB/sunny.png');
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
+    </style>
+    <!-- update the version number as needed -->
+    <!-- <script defer src="/__/firebase/8.3.1/firebase-app.js"></script>
+    <!-- include only the Firebase features as you need -->
+    <!-- <script defer src="/__/firebase/8.3.1/firebase-auth.js"></script>
+    <script defer src="/__/firebase/8.3.1/firebase-database.js"></script>
+    <script defer src="/__/firebase/init.js?useEmulator=true"></script> -->
+    <!-- <script src="js/signIn.js"></script> -->
+    <!-- <script defer src="https://unpkg.com/tone"></script>-->
+    <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
+    <!-- <script defer src="js/app.js" type="module"></script> -->
+    <!-- <script defer src="js/theme.js"></script> -->
+  </head>
+  <body>
+    <div>
+    <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
+        <div class="navbar-brand">
+          <div class="navbar-item">
+              <strong class="has-text-white"> Key-ano </strong>
+          </div>
+
+          <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+        </div>
+
+          <div class="navbar-end">
+            <label id="switch" class="switch navbar-item">
+              <input type="checkbox" onchange="toggleTheme()" id="slider">
+              <span class="slider round"></span>
+            </label>
+            <!-- <a class="navbar-item">
+              <strong>Guide</strong>
+            </a> -->
+            <!-- <a class="navbar-item">
+              <strong> Join Jam </strong>
+            </a>
+            <a id = "logOutBtn" class="navbar-item">
+              <strong> Log out </strong>
+              </a> -->
+          </div>
+      </nav>
+    </div>
+  
+    <div id = "section" class = "">
+  
+    <!-- <div class="columns is-centered" style = "padding-top: 20px;">
+      <button id="viewLoopsBtn" type="button" class="button options">
+      View Loops
+      </button>
+    
+      <button type="button" class="button options" id="changeInstrumentBtn">
+      Change Instrument
+      </button>
+    </div> -->
+    </div>
+        
+        <div class="modal" id = "viewLoopsModal">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">View Loops</p>
+            </header>
+            <section class="modal-card-body">
+              <!-- Content ... -->
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-success">Save</button>
+              <button class="button" id ="closeLoopsBtn">Cancel</button>
+            </footer>
+          </div>
+        </div>
+    
+        
+        <div class="modal" id = "changeInstModal">
+          <div class="modal-background"></div>
+          <div class="modal-card">
+            <header class="modal-card-head">
+              <p class="modal-card-title">Change Instrument</p>
+            </header>
+            <section class="modal-card-body">
+              <!-- Content ... -->
+            </section>
+            <footer class="modal-card-foot">
+              <button class="button is-success">Save</button>
+              <button class="button" id = "closeInstBtn">Cancel</button>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+  <!-- <button id="startaudio">Start Audio</button> -->
+  <div class = "section" id = "keyBoard" style = "justify-content:center; margin-top: 90px;">
+    <!-- keyboard goes here -->
+    <!--<div class="columns is-centered" id ="Loops">
+      <span class="column is-1"></span>
+      <div id="Digit1" class="button column">1</div>
+      <div id="Digit2" class="button column">2</div>
+      <div id="Digit3" class="button column">3</div>
+      <div id="Digit4" class="button column">4</div>
+      <div id="Digit5" class="button column">5</div>
+      <div id="Digit6" class="button column">6</div>
+      <div id="Digit7" class="button column">7</div>
+      <div id="Digit8" class="button column">8</div>
+      <div id="Digit9" class="button column">9</div>
+      <div id="Digit0" class="button column">0</div>
+      <span class="column is-1"></span>
+    </div>-->
+    
+    <div class="columns" id="blackKeys">
+      <span class="row-label column is-1">Synthesizer:</span>
+      <div id="KeyQ" disabled class="column button">Q</div>
+      <div id="KeyW" class="is-dark column button">W</div>
+      <div id="KeyE" class="is-dark column button">E</div>
+      <div id="KeyR" disabled class="column button">R</div>
+      <div id="KeyT" class="is-dark column button">T</div>
+      <div id="KeyY" class="is-dark column button">Y</div>
+      <div id="KeyU" class="is-dark column button">U</div>
+      <div id="KeyI" disabled class="column button">I</div>
+      <div id="KeyO" class="is-dark column button">O</div>
+      <div id="KeyP" class="is-dark column button">P</div>
+      <span class="column is-1"></span>
+    </div>
+
+    <div class="columns" id = "whiteKeys">
+      <span class="column is-1"></span>
+      <div id="KeyA" class="column button">A</div>
+      <div id="KeyS" class="column button">S</div>
+      <div id="KeyD" class="column button">D</div>
+      <div id="KeyF" class="column button">F</div>
+      <div id="KeyG" class="column button">G</div>
+      <div id="KeyH" class="column button">H</div>
+      <div id="KeyJ" class="column button">J</div>
+      <div id="KeyK" class="column button">K</div>
+      <div id="KeyL" class="column button">L</div>
+      <span class="column is-1"></span>
+    </div>
+
+    <div class="columns" id = "drumPads">
+      <span class="row-label column is-1">Drums:</span>
+      <div id="KeyZ" class="is-light column button">Z</div>
+      <div id="KeyX" class="is-light column button">X</div>
+      <div id="KeyC" class="is-light column button">C</div>
+      <div id="KeyV" class="is-light column button">V</div>
+      <div id="KeyB" class="is-light column button">B</div>
+      <div id="KeyN" class="is-light column button">N</div>
+      <div id="KeyM" class="is-light column button">M</div>
+      <span class="column is-1"></span>
+    </div>
+
+  </div>
+</div>
+  <footer class="footer" style = "bottom:0;position:absolute;width:100%; height: 10px;">
+  <div class="content has-text-centered">
+    <p>
+      <strong>Key-ano</strong> by Antonio, Jeffrey, and Tiana (<a href="https://github.com/jegfish/key-ano">Source Code</a>)
+    </p>
+    <p>
+      Made with: <a href="https://bulma.io/">Bulma</a>, <a href="https://tonejs.github.io/">Tone.js</a>
+    </p>
+  </div>
+</footer>
+<script>// import * as Tone from '/node_modules/tone/build/Tone.js';
+  // import * as Tone from 'tone';
+  
+  let DEBUG = true;
+  
+  function debug(...args) {
+    if (DEBUG) {
+      console.log(...args);
+    }
+  }
+  
+  let googleUser;
+  
+  // const logOut = document.querySelector("logOutBtn");
+  
+  // logOut.addEventListener("click", (e) => {
+  //   firebase.auth().signOut().then(() => {
+  //     window.location = 'signIn.html';
+  //   }).catch((error) => {
+  //     // An error happened.
+  //   });
+  // });
+  // const viewLoopsBtn = document.querySelector("#viewLoopsBtn");
+  // const changeInstrumentBtn = document.querySelector("#changeInstrumentBtn")
+  // const changeInstModal = document.querySelector("#changeInstModal");
+  // const viewLoopsModal = document.querySelector("#viewLoopsModal");
+  // const closeLoops = document.querySelector("#closeLoopsBtn");
+  // const closeInst = document.querySelector("#closeInstBtn");
+  
+  // viewLoopsBtn.addEventListener("click", (e) => {
+  //   viewLoopsModal.classList.add("is-active");
+  // });
+  
+  // changeInstrumentBtn.addEventListener("click", (e) => {
+  //   changeInstModal.classList.add("is-active");
+  // });
+  
+  // const closeInstModal = () =>{
+  //   changeInstModal.classList.remove('is-active');
+  //   }
+    
+  //   const closeLoopsModal = () =>{
+  //     viewLoopsModal.classList.remove('is-active');
+  //   }
+    
+  
+  // closeLoops.addEventListener("click", (e) => {
+  //   console.log("clicked");
+  //   closeLoopsModal();
+  // });
+  
+  // closeInst.addEventListener("click", (e) => {
+  //   console.log("clicked");
+  //   closeInstModal();
+  // });
+  
+  
+  
+  // window.onload = (event) => {
+  //   // Use this to retain user state between html pages.
+  //   firebase.auth().onAuthStateChanged(function(user) {
+  //     if (user) {
+  //     console.log('Logged in as: ' + user.displayName);
+  //     googleUser = user;
+  //     } else {
+  //     // If not logged in, navigate back to login page.
+  //     window.location = 'index.html'; 
+  //     };
+  //   });
+  // };
+  
+  // const soundMap = {
+  //   "KeyQ": "", "KeyW": "", "KeyE": "", "KeyR": "", "KeyT": "", "KeyY": "", "KeyU": "", "KeyI": "", "KeyO": "", "KeyP": "",
+  //   "KeyA": "", "KeyS": "", "KeyD": "", "KeyF": "", "KeyG": "", "KeyH": "", "KeyJ": "", "KeyK": "", "KeyL": "",
+  //   "KeyZ": "", "KeyX": "", "KeyC": "", "KeyV": "", "KeyB": "", "KeyN": "", "KeyM": "",
+  // };
+  
+  const soundMap = {
+    "KeyW": {note: "C#4", on: false}, "KeyE": {note: "D#4", on: false}, "KeyT": {note: "F#4", on: false}, "KeyY": {note: "G#4", on: false}, "KeyU": {note: "A#4", on: false}, "KeyO": {note: "C#5", on: false}, "KeyP": {note: "D#5", on: false},
+    "KeyA": {note: "C4", on: false}, "KeyS": {note: "D4", on: false}, "KeyD": {note: "E4", on: false}, "KeyF": {note: "F4", on: false}, "KeyG": {note: "G4", on: false}, "KeyH": {note: "A4", on: false}, "KeyJ": {note: "B4", on: false}, "KeyK": {note: "C5", on: false}, "KeyL": {note: "D5", on: false},
+    "KeyZ": {note: "C2", on: false}, "KeyX": {note: "D2", on: false}, "KeyC": {note: "E2", on: false}, "KeyV": {note: "F2", on: false}, "KeyB": {note: "G2", on: false}, "KeyN": {note: "A2", on: false}, "KeyM": {note: "B2", on: false},
+  };
+  
+  // Make virtual keyboard clickable/tappable
+  const virtKeys = document.querySelectorAll(".column.button");
+  for (let e of virtKeys) {
+    if (e.id.includes("Key") && soundMap[e.id] !== undefined) {
+      e.innerHTML += ` <span class="small">${soundMap[e.id].note}</span>`;
+    }
+    e.addEventListener("mousedown", () => {
+      playKey(e.id);
+    });
+    e.addEventListener("mouseup", () => {
+      stopKey(e.id);
+    });
+  }
+  
+  // const soundMap = {
+  //   "KeyW": "C#4", "KeyE": "D#4", "KeyT": "E#4", "KeyY": "F#4", "KeyU": "G#4", "KeyO": "D#5", "KeyP": "C#5",
+  //   "KeyA": "C4", "KeyS": "D4", "KeyD": "E4", "KeyF": "F4", "KeyG": "G4", "KeyH": "A4", "KeyJ": "B4", "KeyK": "C5", "KeyL": "D4",
+  //   "KeyZ": "", "KeyX": "", "KeyC": "", "KeyV": "", "KeyB": "", "KeyN": "", "KeyM": "",
+  // };
+  
+  function isDrum(keycode) {
+    return /^Key[ZXCVBNM]$/.test(keycode);
+  }
+  
+  const mainSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+  const drum = new Tone.PluckSynth().toDestination();
+  
+  const now = Tone.now();
+  
+  function playKey(keycode) {
+    if (soundMap[keycode] === undefined || soundMap[keycode].on) {
+      return;
+    }
+    let synth = mainSynth;
+    if (isDrum(keycode)) {
+      synth = drum;
+    }
+    const virtkey = document.querySelector(`#${keycode}`);
+    highlightKey(virtkey);
+    // const synth = new Tone.Synth().toDestination();
+    // synth.triggerAttackRelease("C4", "8n");
+    // const now = Tone.now();
+    console.log("activeVoices:", synth.activeVoices);
+    console.log("maxPolyphony:", synth.maxPolyphony);
+    // if (synth.activeVoices >= synth.maxPolyphony) {
+    //   synth.releaseAll(now);
+    // }
+    synth.triggerAttack(soundMap[keycode].note);
+    soundMap[keycode].on = true;
+  }
+  
+  function stopKey(keycode) {
+    if (soundMap[keycode] === undefined) {
+      return;
+    }
+    const virtkey = document.querySelector(`#${keycode}`);
+    unhighlightKey(virtkey);
+    // const now = Tone.now();
+    if (!isDrum(keycode)) {
+      mainSynth.triggerRelease(soundMap[keycode].note, "+0");
+    }
+    soundMap[keycode].on = false;
+    // synth.releaseAll("+0");
+  }
+  
+  function highlightKey(elem) {
+    elem.classList.add("mybox");
+    // console.log(elem);
+  }
+  
+  function unhighlightKey(elem) {
+    elem.classList.remove("mybox");
+  }
+  
+  // function pitchUp() {
+  // if(keycode == '40'){
+  //   const upOctave = new Tone.PitchShift([pitch]);
+  //   pitchShift.pitch = -12;
+  // }
+  
+  // };
+  
+  // function pitchDown() {
+  // if(keycode == '39'){
+  
+  // }
+  
+  // }
+  
+  // function loopKeyO(elem) {
+  
+  // }
+  
+  // const btn = document.querySelector("#startaudio");
+  // btn.addEventListener("click", (e) => {
+  //   console.log("hello");
+  //   const synth = new Tone.Synth().toDestination();
+  //   synth.triggerAttackRelease("C4", "8n");
+  // });
+  
+  document.addEventListener("keydown", (e) => {
+    debug("keydown:", e.code);
+    playKey(e.code);
+  });
+  
+  document.addEventListener("keyup", (e) => {
+    debug("keyup:", e.code);
+    stopKey(e.code);
+  });</script>
+<script>
+  // function to set a given theme/color-scheme
+  function setTheme(themeName) {
+       localStorage.setItem('theme', themeName);
+       document.documentElement.className = themeName;
+   }
+
+   // function to toggle between light and dark theme
+   function toggleTheme() {
+       if (localStorage.getItem('theme') === 'theme-dark') {
+           setTheme('theme-light');
+       } else {
+           setTheme('theme-dark');
+       }
+   }
+
+   // Immediately invoked function to set the theme on initial load
+   (function () {
+       if (localStorage.getItem('theme') === 'theme-dark') {
+           setTheme('theme-dark');
+           document.getElementById('slider').checked = false;
+       } else {
+           setTheme('theme-light');
+         document.getElementById('slider').checked = true;
+       }
+   })();
+
+</script>
+</body>
+</html>
