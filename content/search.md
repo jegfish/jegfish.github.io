@@ -1,5 +1,6 @@
 +++
 title = "Search"
+author = ["Jeffrey Fisher"]
 draft = false
 layout = "search"
 url = "/search/"

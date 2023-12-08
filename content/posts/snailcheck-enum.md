@@ -66,7 +66,7 @@ We could express this as a single generator function like we did with the natura
 let int : int lazylist =
   let rec ints' n =
     Cons (-n, fun () ->
-	     Cons (n, fun () -> ints' (n + 1))) in
+             Cons (n, fun () -> ints' (n + 1))) in
   Cons (0, fun () -> ints' 1)
 ;;
 
@@ -130,7 +130,7 @@ let rec interleave xs ys =
   | Nil, ys -> ys
   | Cons (x, xs), ys ->
      Cons (x, fun () -> interleave ys (force xs))
-	 (* Difference: append (force xs) ys *)
+         (* Difference: append (force xs) ys *)
 
 (* Operator form. *)
 let ( @| ) = interleave
@@ -162,7 +162,7 @@ let rec map f xs =
   | Nil -> Nil
   | Cons (x, xs) ->
      Cons (f x,
-	   fun () -> map f (force xs))
+           fun () -> map f (force xs))
 ```
 
 ```ocaml
@@ -185,7 +185,7 @@ let rec pair xlist ylist =
   | Cons (x, xrest), Cons (y, yrest) ->
      (* x paired with every y, interleaved with: pair xs ylist *)
      Cons ((x,y),
-	   fun () -> pair_with x (force yrest) @| pair (force xrest) ylist)
+           fun () -> pair_with x (force yrest) @| pair (force xrest) ylist)
   | Nil, _ -> Nil
   | _, Nil -> Nil
 ```
