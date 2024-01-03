@@ -1,4 +1,0 @@
-#+TITLE: Search
-#+HUGO_SECTION: /
-#+HUGO_BASE_DIR: ..
-#+hugo_custom_front_matter: :layout search :url /search/ :summary search :placeholder "Search site and blog posts"
