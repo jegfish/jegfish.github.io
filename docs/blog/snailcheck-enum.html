@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" type="text/css" media="all" href="/styles.css" />
+    <title>SnailCheck: Generating values by enumeration</title>
+  </head>
+<body>
+<header>
+  <nav aria-labelledby="primary-navigation">
+    <ol>
+      <li><a href="/">Home</a></li>
+      <li><a href="/blog">Blog</a></li>
+      <li><a href="/">Projects</a></li>
+    </ol>
+  </nav>
+</header>
+
+<!--
+-->
+<h1>SnailCheck: Generating values by enumeration</h1><p>2023-06-08</p><p><a href="/blog/snailcheck-lazy.html">Previous post in this series</a>.</p><p>In the previous post we saw the enumeration of the natural numbers. Now we will
+learn to enumerate more complex types.</p><h2>Enumerating booleans</h2><p>Enumerating booleans is simpler than the naturals, but it's worth seeing. We'll
+make a convenience function for converting a regular list to a lazy list; it
+will also be useful for testing and for enumerating other types with few values.</p><pre><code>let rec of_list xs =
+  match xs with
+  | [] -&gt; Nil
+  | x::xs -&gt; Cons (x, fun () -&gt; of_list xs)</code></pre><pre><code>let bool : bool lazylist = of_list [true; false]</code></pre><pre><code>take 2 bool</code></pre><pre><code>: - : bool list = [true; false]</code></pre><p><note>Note: We are doing some punning here to allow conciseness.<sup><a href="#fn-1">1</a></sup> When used
+in types "bool" will still refer to the the standard boolean type. But when used
+in expressions "bool" means this particular lazy list.</note></p><h2>Enumerating integers</h2><p>
+</p><h3>Problem</h3><p>
+Listing the integers is non-obvious because unlike the naturals there is no
+"starting point". In math you can discuss the range <code>(-\infty, \infty)</code>, but
+in OCaml we can't start at negative infinity.</p><p>OCaml's <code>int</code> type does technically have a starting point, <code>min_int</code>,
+which seems to be <math>-2^{62}</math>. Maybe we could do <code>let int = up_from
+min_int</code>? There are a few problems with this:</p><ol><li>For a while all you'll be seeing is negative numbers with a large magnitude.
+It's easier to work with smaller numbers, and we also want to check zero and
+positive numbers. It's also nice to try the simplest cases first, to hopefully
+report a failure that is easy to understand.</li>
+
+<li>"a while" is probably longer than a human lifespan. Rough calculations with
+a 5 millisecond time per check gave me an 11-digit number of <em>years</em>. 5 ms is
+perhaps a long time for executing a function, but even at the nanosecond scale
+you can't exhaust the integers. A quick Internet search says even just
+incrementing a counter from 0 to <math>2^{64}</math> (not even checking properties) would
+take around 100 years.</li>
+
+<li>Sometimes we may want to use a special integer type that can represent
+arbitrarily-large integers. Then there will be no such thing as <code>min_int</code>.</li></ol><h3>Solution</h3><p>There is a way to arrange the integers that gives them a starting point and
+gives the simplest cases first: <math>0, -1, 1, -2, 2, -3, 3, \ldots</math>.
+<sup><a href="#fn-2">2</a></sup></p><p>We could express this as a single generator function like we did with the naturals:</p><pre><code>let int : int lazylist =
+  let rec ints' n =
+    Cons (-n, fun () -&gt;
+             Cons (n, fun () -&gt; ints' (n + 1))) in
+  Cons (0, fun () -&gt; ints' 1)
+;;
+
+take 9 int</code></pre><pre><code>: - : int list = [0; -1; 1; -2; 2; -3; 3; -4; 4]</code></pre><p>However, we will express it in a way that I feel is more elegant. It will be
+useful to examine this technique with the integers first, because we will need
+it for more complex types later.</p><p><mathblock>\mathbb{Z} = \mathbb{N} \cup \{-1, -2, -3, \ldots\}\</mathblock></p><p>We can break the integers into pieces. If we combine the natural numbers and the
+negative integers, we get the set of all integers.</p><p>The common way to combine lists is appending.</p><pre><code>let rec append xs ys =
+  match xs, ys with
+  | Nil, ys -&gt; ys
+  | Cons (x, xs), ys -&gt;
+     Cons (x, fun () -&gt; append (force xs) ys)</code></pre><p>Let's confirm that our lazy list =append= works:</p><pre><code>take 6 @@ append (of_list [1;2;3]) (of_list [4;5;6])</code></pre><pre><code>: - : int list = [1; 2; 3; 4; 5; 6]</code></pre><p>Now let's try making the integers:</p><pre><code>let rec down_from n = Cons (n, fun () -&gt; down_from (n - 1))</code></pre><pre><code>&lt;&lt;chp02-extra&gt;&gt;
+let int = append nats (down_from (-1)) in
+take 9 int</code></pre><pre><code>: - : int list = [0; 1; 2; 3; 4; 5; 6; 7; 8]</code></pre><p>Oh no, we aren't seeing any negatives! There are infinitely many naturals, so
+we'll never get to the negatives.</p><p>If we make a slight change to our <code>append</code> function, we can get the behavior we want.</p><pre><code>let rec interleave xs ys =
+  match xs, ys with
+  | Nil, ys -&gt; ys
+  | Cons (x, xs), ys -&gt;
+     Cons (x, fun () -&gt; interleave ys (force xs))
+         (* Difference: append (force xs) ys *)
+
+(* Operator form. *)
+let ( @| ) = interleave
+
+let int : int lazylist = nats @| (down_from (-1))</code></pre><p>In the recursive call we now swap the position of <code>xs</code> and <code>ys</code>, so we will get
+the behavior of alternating which list we grab from.</p><pre><code>&lt;&lt;chp02-extra&gt;&gt;
+take 9 int</code></pre><pre><code>: - : int list = [0; -1; 1; -2; 2; -3; 3; -4; 4]</code></pre><h2>Enumerating tuples</h2><p>Not all functions deal with simple scalar types. We also want to enumerate
+structured types, starting with tuples.</p><p>First let's add the ability to map over lazy lists.</p><pre><code>let rec map f xs =
+  match xs with
+  | Nil -&gt; Nil
+  | Cons (x, xs) -&gt;
+     Cons (f x,
+           fun () -&gt; map f (force xs))</code></pre><pre><code>let square x = x * x in
+let perfect_squares = map square nats in
+take 10 perfect_squares</code></pre><pre><code>: - : int list = [0; 1; 4; 9; 16; 25; 36; 49; 64; 81]</code></pre><pre><code>let rec pair_with x ll =
+  map (fun y -&gt; (x, y)) ll
+
+let rec pair xlist ylist =
+  match xlist, ylist with
+  | Cons (x, xrest), Cons (y, yrest) -&gt;
+     (* x paired with every y, interleaved with: pair xs ylist *)
+     Cons ((x,y),
+           fun () -&gt; pair_with x (force yrest) @| pair (force xrest) ylist)
+  | Nil, _ -&gt; Nil
+  | _, Nil -&gt; Nil</code></pre><p>The key idea is to pair up the first <code>x</code> with every <code>y</code> in <code>ylist</code>, then combine
+that with the pairing of <code>xrest</code> with <code>ylist</code>.</p><p>Note that <code>pair_with x (force yrest)</code> actually uses <code>yrest</code>, so it
+skips the first <code>y</code>. This is fine though because we have the pairing of
+<code>x</code> and the first <code>y</code> with <code>Cons ((x,y), ...)</code>.</p><p>The <code>Cons ((x,y), ...)</code> piece is a bit inelegant, but necessary with the
+current implementation of <code>interleave</code>. Later we will solve this issue and
+clean up <code>pair</code>.</p><pre><code>take 10 @@ pair_with 42 (of_list [1;2;3;4;5])</code></pre><pre><code>: - : (int * int) list = [(42, 1); (42, 2); (42, 3); (42, 4); (42, 5)]</code></pre><pre><code>take 10 @@ pair bool bool</code></pre><pre><code>: - : (bool * bool) list =
+: [(true, true); (true, false); (false, true); (false, false)]</code></pre><pre><code>take 10 @@ pair int int</code></pre><pre><code>: - : (int * int) list =
+: [(0, 0); (0, -1); (-1, 0); (0, 1); (-1, -1); (0, -2); (1, 0); (0, 2);
+:  (-1, 1); (0, -3)]</code></pre><p>We can of course mix different types.</p><pre><code>take 10 @@ pair int bool</code></pre><pre><code>: - : (int * bool) list =
+: [(0, true); (0, false); (-1, true); (-1, false); (1, true); (1, false);
+:  (-2, true); (-2, false); (2, true); (2, false)]</code></pre><h3>Triples and n-tuples</h3><p>Two is a magic number. We can mimic n-tuples using nested pairs.</p><p>For example: <code>(1, (2, 3))</code>.</p><pre><code>let triple xs ys zs =
+  let triple_of_nest (a, (b, c)) = (a, b, c) in
+  map triple_of_nest (pair xs (pair ys zs))</code></pre><pre><code>take 5 @@ triple int (pair bool int) int</code></pre><pre><code>: - : (int * (bool * int) * int) list =
+: [(0, (true, 0), 0); (0, (true, 0), -1); (-1, (true, 0), 0);
+:  (0, (true, -1), 0); (-1, (true, 0), -1)]</code></pre><h2>Enumerating algebraic data types (ADT)</h2><p>Here's an interesting but still simple ADT: a binary tree.</p><pre><code>type 'a tree = Leaf | Branch of 'a * 'a tree * 'a tree</code></pre><p>The enumeration of ADT constructors can be built directly off of tuple
+enumeration. We enumerate n-tuples, where n is the number of arguments to the
+constructor, then construct values.</p><pre><code>let cons0 cons = of_list [cons]
+let cons1 cons a = map cons a
+let cons2 cons a b = map cons (pair a b)
+let cons3 cons a b c = map cons (triple a b c)</code></pre><p>In OCaml constructors cannot be passed around like functions, so we will define
+function wrappers to pass to <code>consN</code>.</p><pre><code>let leaf = Leaf;;
+let branch (v, l, r) = Branch (v, l, r)</code></pre><p>The <code>branch</code> function converts an appropriate tuple into a tree branch.</p><pre><code>let rec tree_a typ =
+  cons0 leaf
+  @| cons3 branch typ (tree_a typ) (tree_a typ)</code></pre><p>The type <code>tree</code> has two constructors. We start with the simple one,
+<code>Leaf</code>. It is a nullary constructor (no arguments), so we do <code>cons0 leaf</code>
+to enumerate it.</p><p>The other constructor is <code>Branch</code>, which has 3 parts, so we use <code>cons3</code>. The
+first part is of type <code>'a</code>, the type the tree is parameterized by. We have the
+<code>typ</code> argument to take in the enumeration of <code>'a</code>, so we do <code>cons3 branch typ</code>.
+The next two parts are both of type tree, so we have <code>cons3 branch typ (tree_a
+typ) (tree_a typ)</code>.</p><p>Writing enumerations of algebraic data types is a simple, mechanical process.<sup><a href="#fn-3">3</a></sup></p><p>Let's check out the result.</p><pre><code>take 5 @@ (tree_a int)</code></pre><pre><code>: Stack overflow during evaluation (looping recursion?).</code></pre><p>Turns out I lied a bit. What went wrong?</p><p>The top level function in the body of <code>tree_a</code> is <code>@|</code> (a.k.a.
+<code>interleave</code>). OCaml uses
+<a href="https://en.wikipedia.org/wiki/Strict_programming_language">strict
+evaluation</a>, so we evaluate the arguments before evaluating the function. The
+left argument <code>cons0 leaf</code> is fine. The problem arises in the right argument,
+which has recursive calls to <code>tree_a</code>.</p><p>With recursion it is usually important to have:</p><ol><li>A base case.</li>
+<li>Recursive calls make the input "smaller", approaching the base case.</li>
+<li>Conditional that checks whether to perform the base or recursive case.</li></ol><p>We have a base case of <code>cons0 leaf</code><code>, but we don't have a conditional.</code>Conditionals are special in that only some of their arguments/branches are
+evaluated each time, while functions have <em>all</em> of their arguments evaluated
+every time.</p><p>The problem is that we are always evaluating the recursive calls in <code>cons3
+branch typ (tree_a typ) (tree_a typ)</code>, so we recurse infinitely.</p><h3>Solution</h3><p>Imagine you are <code>tree_a</code>=. This is roughly the behavior we want:</p><ul><li>For the first tree, I'll give you a <code>Leaf</code>=.</li>
+<li>For the second tree, I'll give you a <code>Branch</code>=.
+<ul><li>To make a branch, I need to make a <code>'a</code>. That's easy, I use <code>typ</code>.</li>
+<li>I also need to make two of <code>'a tree</code>. To do that, I make two nested calls of <code>tree_a typ</code>.
+<ul>    <li>I'm the first nested call. I'll give you the first tree in the enumeration. That's <code>Leaf</code>.</li>
+<li>I'm the second nested call. I'll give you the first tree in the enumeration. That's <code>Leaf</code>.</li></ul></li>
+<li>I've completed giving <code>Branch Leaf Leaf</code>.</li></ul></li>
+<li>For the third tree, ...</li></ul><p>If we grab the base case (<code>Leaf</code>) first, we can manage to build recursive cases (<code>Branch</code>).</p><p>We can't do this with strict evaluation, so we need to add a bit of laziness. We
+will write <code>lazy_interleave</code> so that its arguments are both lazy (<code>delayed</code>), so
+we won't get stuck on recursive calls encountered while evaluating the arguments
+to <code>lazy_interleave</code>.<sup><a href="#fn-4">4</a></sup></p><pre><code>let rec lazy_interleave (xs : 'a lazylist delayed) (ys: 'a lazylist delayed) =
+  let xs = force xs in
+  match xs with
+  | Nil -&gt; force ys
+  | Cons (x, xs) -&gt;
+     Cons (x, fun () -&gt; lazy_interleave ys xs)
+
+let ( @|| ) = lazy_interleave</code></pre><p>Now we can enumerate trees.</p><pre><code>let rec tree typ =
+  let a = fun () -&gt; cons0 leaf in
+  let b = fun () -&gt; cons3 branch typ (tree typ) (tree typ) in
+  a @|| b
+in
+
+take 3 @@ tree int</code></pre><pre><code>: - : int tree list =
+: [Leaf; Branch (0, Leaf, Leaf); Branch (0, Leaf, Branch (0, Leaf, Leaf))]</code></pre><h3>Order matters</h3><p>Remember when I said we needed to grab the base case(s) before the recursive
+case(s)? With the current code, that's true.</p><pre><code>let rec tree_bad typ =
+  let a = fun () -&gt; cons3 branch typ (tree_bad typ) (tree_bad typ) in
+  let b = fun () -&gt; cons0 leaf in
+  a @|| b
+in
+take 5 @@ tree_bad int</code></pre><pre><code>: Stack overflow during evaluation (looping recursion?).</code></pre><p>This is problematic. It's annoying to remember and results in an unhelpful error message.<sup><a href="#fn-5">5</a></sup></p><p>It's not simply a matter of laziness.
+<a href="http://jmct.cc/pearlcheck.pdf">PearlCheck</a>, which is written in the lazy
+language Haskell, also faces this problem---though it is solved later in the
+paper.<sup><a href="#fn-6">6</a></sup></p><p>It is possible to solve this problem in SnailCheck if we switch from simple
+enumerated lists to <code>tiers</code>, like PearlCheck uses. That may be covered in a
+later post, but for now you can check out the PearlCheck paper.</p><h2>Enumerating lists</h2><p>Lists in OCaml are essentially an algebraic data type, so we can enumerate them now.</p><pre><code>let rec list typ =
+  let cons (x, xs) = x :: xs in
+  (fun () -&gt; cons0 [])
+  @|| (fun () -&gt; cons2 cons typ (list typ))</code></pre><pre><code>take 5 @@ list bool</code></pre><pre><code>: - : bool list list = [[]; [true]; [true; true]; [false]; [true; true; true]]</code></pre><h2>Elegant <code>pair</code></h2><p>As promised, here is the elegant version of <code>pair</code>. This eliminates the
+<code>Cons ((x,y), ...)</code> and expresses it only with <code>pair_with</code> and a
+recursive call.</p><pre><code>let rec elegant_pair xlist ylist =
+  match xlist, ylist with
+  | Cons (x, xrest), Cons (y, yrest) -&gt;
+     (* x paired with every y, then repeat with xrest. *)
+     (fun () -&gt; pair_with x ylist)
+     @|| (fun () -&gt; elegant_pair (force xrest) ylist)
+  | Nil, _ -&gt; Nil
+  | _, Nil -&gt; Nil</code></pre><pre><code>take 10 @@ elegant_pair int int</code></pre><pre><code>: - : (int * int) list =
+: [(0, 0); (-1, 0); (0, -1); (1, 0); (0, 1); (-1, -1); (0, -2); (-2, 0);
+:  (0, 2); (-1, 1)]</code></pre><pre><code>take 10 @@ pair int int</code></pre><pre><code>: - : (int * int) list =
+: [(0, 0); (0, -1); (-1, 0); (0, 1); (-1, -1); (0, -2); (1, 0); (0, 2);
+:  (-1, 1); (0, -3)]</code></pre><p>The order is a bit different, but it's still correct.</p><h2>See also</h2><p>This may be the last SnailCheck post, so I'll leave you with some pointers if you're interested in learning more.</p><ul>  <li>As mentioned previously this series is essentially a port of the
+<a href="http://jmct.cc/pearlcheck.pdf">PearlCheck</a> paper to OCaml.
+<ul><li>PearlCheck is a "tutorial reconstruction" of LeanCheck: <a href="https://hackage.haskell.org/package/leancheck">https://hackage.haskell.org/package/leancheck</a></li>
+<li>So far the SnailCheck posts have covered the parts I struggled to translate to OCaml, but there is a lot more covered by PearlCheck that's worth reading.</li></ul></li>
+
+  <li>According to PearlCheck, SmallCheck was the first enumerative PBT tool for Haskell.
+<ul><li>Paper: <a href="https://www.cs.york.ac.uk/fp/smallcheck/smallcheck.pdf">https://www.cs.york.ac.uk/fp/smallcheck/smallcheck.pdf</a></li>
+<li>An implementation: <a href="https://github.com/Bodigrim/smallcheck">https://github.com/Bodigrim/smallcheck</a></li></ul></li>
+
+<li>Feat: functional enumeration of algebraic types
+<ul><li>Paper: <a href="https://dl.acm.org/doi/abs/10.1145/2364506.2364515">https://dl.acm.org/doi/abs/10.1145/2364506.2364515</a>
+<ul><li>"Feat provides efficient 'random access' to enumerated values. The
+primary application is property-based testing, where it is used to define
+both random sampling (for example QuickCheck generators) and exhaustive
+enumeration (in the style of SmallCheck)"</li></ul></li>
+<li>An OCaml library inspired by Feat: <a href="https://gitlab.inria.fr/fpottier/feat/">https://gitlab.inria.fr/fpottier/feat/</a></li></ul></li>
+
+<li>There are a variety of testing frameworks for OCaml. Several of them support some form of property-based testing.
+<ul><li><a href="https://ocamlverse.net/content/testing.html">https://ocamlverse.net/content/testing.html</a></li></ul></li></ul><h2>Footnotes</h2><p id="fn-1">1. We're also doing punning because [[https://c-cube.github.io/qcheck/][QCheck]]
+does it that way, and we want to be compatible with QCheck.</p><p id="fn-2">2. Apparently this is called the
+<a href="https://en.wikipedia.org/wiki/Well-order#Integers">well-ordering of the
+integers</a>. I'd seen this ordering before, and I recently learned the
+Well-Ordering Principle, but hadn't made the connection until looking it up just
+now.</p><p id="fn-3">3. That means we can automate the generation of enumerations of algebraic data
+types! I may write a post about this in the future.</p><p id="fn-4">4. There's not much use in keeping the non-lazy version of <code>interleave</code> around; I
+consider it broken. I only gave <code>lazy_interleave</code> a new name as a shortcut to
+appease the literate programming setup I'm using.</p><p id="fn-5">5. If you know of a way to detect the problem and provide a helpful error message, let me know!
+<br/>
+Maybe stack overflow is a catchable exception, and could print an error message
+that suggests that the problem could be the order of the ADT cases. However, I
+say "suggest" because there could be other reasons for stack overflow; this
+merely detects a symptom rather than the problem.
+
+I'm thinking proper detection would require some sort of static analysis. Maybe
+it could be done with a <a href="https://ocaml.org/docs/metaprogramming">PPX</a>.</p><p id="fn-6">6. PearlCheck doesn't mention this problem, but if you copy the code up through
+"Mark II: Algebraic Datatypes" you can reproduce the problem on this example:
+
+<pre><code>instance Listable Expr where
+  -- Different from the one in the paper.
+  -- Recursive case comes first / on the left.
+  list = cons2 Add \/ cons1 Val
+
+-- Gets stuck here on infinite recursion.
+take 5 (list :: [Expr])</code></pre>
+
+The error goes away at "Mark IV: Fair Enumeration" because of the swap from <code>list</code> to <code>tiers</code>.</p>
+</body>
+</html>
