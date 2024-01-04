@@ -2,13 +2,21 @@
 
 ◊title{SnailCheck: Laziness from scratch in OCaml}
 
+2023-06-04
+
+◊bloglink["snailcheck-enum"]{Next post in this series}.
+
 ◊note{
-You do not need to be well versed in OCaml or property-based testing to
+Note: You do not need to be well versed in OCaml or property-based testing to
 understand this article. I believe the core idea should apply to any language
-with closures.
+with closures (lambdas, anonymous functions that capture free variables).
 }
 
-I will be taking you through the design of an enumerative property-based testing (PBT) library, inspired by PearlCheck◊footnote[1] and LeanCheck. Like them, SnailCheck’s main focus is on being easy to understand. One reason I am doing this is to develop a deeper understanding of the details that PearlCheck (rightfully) skips.
+I will be taking you through the design of an enumerative property-based testing
+(PBT) library, inspired by PearlCheck◊footnote[1] and LeanCheck. Like them,
+SnailCheck’s main focus is on being easy to understand. One reason I am doing
+this is to develop a deeper understanding of the details that PearlCheck
+(rightfully) skips.
 
 Our first stop will be laziness.
 
@@ -68,7 +76,7 @@ as empty paired parentheses, ◊code{()}. The argument to our lazy values carrie
 no information, it’s more of an implementation detail. Really the intention is a
 function that takes no arguments, but this is not possible in OCaml.
 
-TODO: Maybe instead do codeblock[#:lang 'ocaml] as the syntax?
+◊todo{Maybe instead do codeblock[#:lang 'ocaml] as the syntax?}
 ◊codeblock[#:lang 'ocaml]{
 type 't delayed = unit -> 't
 }
@@ -228,6 +236,7 @@ I learned how lazy lists worked from the ◊hyperlink["https://cs3110.github.io/
 
 ◊def-footnote[1]{
 ◊url{http://jmct.cc/pearlcheck.pdf}
+◊br[]
 SnailCheck would not be possible without PearlCheck. You can think of SnailCheck as a port of PearlCheck to OCaml.
 
 If you are more interested in Haskell than OCaml, you may want to read the PearlCheck paper instead of this series. You should also check out PearlCheck anyways, as it is a great paper and much of its material probably won’t be covered in this series.
