@@ -1,7 +1,7 @@
 TEMPLATE = src/template.html.p
 
 .PHONY: all
-all: docs/CNAME docs/index.html docs/styles.css docs/blog/index.html docs/blog/snailcheck-lazy.html docs/blog/snailcheck-enum.html
+all: docs/CNAME docs/index.html docs/styles.css docs/blog/index.html docs/blog/snailcheck-lazy.html docs/blog/snailcheck-enum.html docs/tw-collage.html
 
 # Serve the built pages, for testing that the building went okay.
 .PHONY: serve
@@ -24,6 +24,9 @@ docs/index.html: src/index.poly.pm
 
 docs/styles.css: src/styles.css
 	cp $< $@
+
+docs/tw-collage.html: src/tw-collage.poly.pm
+	racket render-page.rkt $< $(TEMPLATE) $@
 
 docs/blog/index.html: src/blog/index.poly.pm
 	racket render-page.rkt $< $(TEMPLATE) $@
