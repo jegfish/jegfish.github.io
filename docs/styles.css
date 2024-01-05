@@ -29,3 +29,8 @@ pre {
     padding: 0.5em;
     background: #111;
 }
+
+.jumpnote-link {
+    text-decoration: none;
+    border-bottom: 2px dotted;
+}
