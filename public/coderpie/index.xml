@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>Coderpies on Jeffrey Fisher</title>
+    <link>https://example.org/coderpie/</link>
+    <description>Recent content in Coderpies on Jeffrey Fisher</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <atom:link href="https://example.org/coderpie/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CoderPie: Computational Art and 2D Games</title>
+      <link>https://example.org/coderpie/art-games/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://example.org/coderpie/art-games/</guid>
+      <description>Instructor: Jeffrey Fisher&#xA;Info Syllabus Extra resources References / guides Saving your work Keyboard shortcuts reference Python Python syntax reference Python syntax guide Lessons/Projects Paint Game: Pong Game: Snake Game: Fruit ninja </description>
+      <content:encoded><![CDATA[<p>Instructor: Jeffrey Fisher</p>
+<h1 id="info">Info</h1>
+<ul>
+<li>Syllabus</li>
+<li><a href="extra">Extra resources</a></li>
+</ul>
+<h1 id="references--guides">References / guides</h1>
+<ul>
+<li>Saving your work</li>
+<li>Keyboard shortcuts reference</li>
+<li>Python
+<ul>
+<li>Python syntax reference</li>
+<li>Python syntax guide</li>
+</ul>
+</li>
+</ul>
+<h1 id="lessonsprojects">Lessons/Projects</h1>
+<ul>
+<li>Paint</li>
+<li>Game: Pong</li>
+<li>Game: Snake</li>
+<li>Game: Fruit ninja</li>
+</ul>
+]]></content:encoded>
+    </item>
+    <item>
+      <title>Extra resources</title>
+      <link>https://example.org/coderpie/art-games/extra/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      <guid>https://example.org/coderpie/art-games/extra/</guid>
+      <description>Processing foundation The graphics library we are using is based on the Processing libraries. There are tutorials, books, and other resources on their website. The Coding Train A YouTube channel by Daniel Shiffman that has a lot of creative coding (what we&amp;rsquo;re doing) learning resources. He uses Processing (the same library we are using), but usually in Java or JavaScript. From Python, JavaScript is easier to learn than Java is.</description>
+      <content:encoded><![CDATA[<ul>
+<li><a href="https://processing.org/">Processing foundation</a>
+<ul>
+<li>The graphics library we are using is based on the Processing libraries. There are tutorials, books, and other resources on their website.</li>
+</ul>
+</li>
+<li><a href="https://thecodingtrain.com/">The Coding Train</a>
+<ul>
+<li>A YouTube channel by Daniel Shiffman that has a lot of creative coding (what we&rsquo;re doing) learning resources.</li>
+<li>He uses Processing (the same library we are using), but usually in Java or JavaScript. From Python, JavaScript is easier to learn than Java is.</li>
+</ul>
+</li>
+</ul>
+]]></content:encoded>
+    </item>
+  </channel>
+</rss>
