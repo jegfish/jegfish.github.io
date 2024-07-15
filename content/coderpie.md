@@ -1,7 +1,6 @@
 ---
-title: CoderPie
-weight: 20
-menus: main
+title: "CoderPie"
+type: "page"
 ---
 > CoderPie is a coding summer camp. For more information, see their main website: <https://www.coderpie.com/>
 >
