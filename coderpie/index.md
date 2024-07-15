@@ -1,7 +1,7 @@
 ---
 title: "CoderPie"
-type: "page"
 ---
+
 > CoderPie is a coding summer camp. For more information, see their main website: <https://www.coderpie.com/>
 >
 > I am currently working as an instructor at CoderPie. This section of my personal website is for sharing course materials with my students.
