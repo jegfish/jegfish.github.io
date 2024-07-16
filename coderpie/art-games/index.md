@@ -4,17 +4,22 @@ title: "CoderPie: Computational Art and 2D Games"
 Instructor: Jeffrey Fisher
 
 # Info
+
 - Syllabus
 - [Extra resources](extra)
 
 # References / guides
+
 - Saving your work
 - Keyboard shortcuts reference
-- Python
-	- Python syntax reference
-	- Python syntax guide
+- JavaScript
+	- JavaScript syntax reference
+	- JavaScript syntax guide
+
 # Lessons/Projects
-- Paint
+
+- Draw
+- [Paint](paint)
 - Game: Pong
 - Game: Snake
 - Game: Fruit ninja
