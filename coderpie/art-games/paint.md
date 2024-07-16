@@ -59,7 +59,7 @@ Curated list:
 		- `fill('blue')` -- If you're using a specific color or color name, make sure it is in quotation marks.
 		- `fill(60, 100, 100)` -- hue 60, maximum saturation and brightness
 - Defining new variables:
-	- Docs: https://p5js.org/reference/p5/let/
+	- Docs: <https://p5js.org/reference/p5/let/>
 	- Template: `let <variable name> = <initial value>`
 	- Example: `let radius = 50`
 - Variable assignment (changing the value of a variable):
@@ -69,4 +69,4 @@ Curated list:
 		- `radius = radius + 5`
 		- `radius = 5 + radius`
 - If-else conditional statements
-	- Docs: https://p5js.org/reference/p5/if-else/
+	- Docs: <https://p5js.org/reference/p5/if-else/>
