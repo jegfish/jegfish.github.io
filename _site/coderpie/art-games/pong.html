@@ -95,6 +95,88 @@
 
 <h3 id="0-starter-code">0. Starter code</h3>
 
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// state</span>
+<span class="kd">let</span> <span class="nx">ballX</span>
+<span class="kd">let</span> <span class="nx">ballY</span>
+<span class="kd">let</span> <span class="nx">ballRadius</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="kd">let</span> <span class="nx">xSpeed</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="kd">let</span> <span class="nx">ySpeed</span> <span class="o">=</span> <span class="mi">5</span>
+
+<span class="kd">let</span> <span class="nx">SPACEBAR</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="kd">let</span> <span class="nx">KEY_W</span> <span class="o">=</span> <span class="mi">87</span>
+<span class="kd">let</span> <span class="nx">KEY_S</span> <span class="o">=</span> <span class="mi">83</span>
+
+<span class="kd">function</span> <span class="nf">setup</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">createCanvas</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+  
+  <span class="nx">ballX</span> <span class="o">=</span> <span class="nx">width</span> <span class="o">/</span> <span class="mi">2</span>
+  <span class="nx">ballY</span> <span class="o">=</span> <span class="nx">height</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">100</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nf">draw</span><span class="p">()</span> <span class="p">{</span>
+  
+  <span class="nf">stroke</span><span class="p">(</span><span class="dl">'</span><span class="s1">white</span><span class="dl">'</span><span class="p">)</span>
+  <span class="nf">fill</span><span class="p">(</span><span class="dl">'</span><span class="s1">white</span><span class="dl">'</span><span class="p">)</span>
+  
+  <span class="c1">// clear out old frames</span>
+  <span class="nf">background</span><span class="p">(</span><span class="mi">32</span><span class="p">)</span>
+
+  <span class="c1">// draw current frame based on state</span>
+  <span class="nf">circle</span><span class="p">(</span><span class="nx">ballX</span><span class="p">,</span> <span class="nx">ballY</span><span class="p">,</span> <span class="nx">ballRadius</span><span class="p">)</span>
+
+  <span class="c1">// modify state</span>
+  <span class="nx">ballX</span> <span class="o">=</span> <span class="nx">ballX</span> <span class="o">+</span> <span class="nx">xSpeed</span>
+  <span class="nx">ballY</span> <span class="o">=</span> <span class="nx">ballY</span> <span class="o">+</span> <span class="nx">ySpeed</span>
+  
+  <span class="c1">// ball hits left wall</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">ballX</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// bounce off</span>
+    <span class="nx">xSpeed</span> <span class="o">=</span> <span class="nx">xSpeed</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="p">}</span>
+  
+  <span class="c1">// ball hits right wall</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">ballX</span> <span class="o">&gt;</span> <span class="nx">width</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// bounce off</span>
+    <span class="nx">xSpeed</span> <span class="o">=</span> <span class="nx">xSpeed</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="p">}</span>
+
+  <span class="c1">// bounce off top and bottom</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">ballY</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">ballY</span> <span class="o">&gt;</span> <span class="nx">height</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">ySpeed</span> <span class="o">=</span> <span class="nx">ySpeed</span> <span class="o">*</span> <span class="o">-</span><span class="mi">1</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// https://github.com/bmoren/p5.collide2D/blob/master/p5.collide2d.js</span>
+<span class="kd">function</span> <span class="nf">collideRectCircle</span><span class="p">(</span><span class="nx">rx</span><span class="p">,</span> <span class="nx">ry</span><span class="p">,</span> <span class="nx">rw</span><span class="p">,</span> <span class="nx">rh</span><span class="p">,</span> <span class="nx">cx</span><span class="p">,</span> <span class="nx">cy</span><span class="p">,</span> <span class="nx">radius</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">//2d</span>
+  <span class="c1">// temporary variables to set edges for testing</span>
+  <span class="kd">var</span> <span class="nx">testX</span> <span class="o">=</span> <span class="nx">cx</span>
+  <span class="kd">var</span> <span class="nx">testY</span> <span class="o">=</span> <span class="nx">cy</span>
+
+  <span class="c1">// which edge is closest?</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">cx</span> <span class="o">&lt;</span> <span class="nx">rx</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">testX</span> <span class="o">=</span> <span class="nx">rx</span> <span class="c1">// left edge</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">cx</span> <span class="o">&gt;</span> <span class="nx">rx</span> <span class="o">+</span> <span class="nx">rw</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">testX</span> <span class="o">=</span> <span class="nx">rx</span> <span class="o">+</span> <span class="nx">rw</span>
+  <span class="p">}</span> <span class="c1">// right edge</span>
+
+  <span class="k">if </span><span class="p">(</span><span class="nx">cy</span> <span class="o">&lt;</span> <span class="nx">ry</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">testY</span> <span class="o">=</span> <span class="nx">ry</span> <span class="c1">// top edge</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if </span><span class="p">(</span><span class="nx">cy</span> <span class="o">&gt;</span> <span class="nx">ry</span> <span class="o">+</span> <span class="nx">rh</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">testY</span> <span class="o">=</span> <span class="nx">ry</span> <span class="o">+</span> <span class="nx">rh</span>
+  <span class="p">}</span> <span class="c1">// bottom edge</span>
+
+  <span class="c1">// get distance from closest edges</span>
+  <span class="kd">var</span> <span class="nx">distance</span> <span class="o">=</span> <span class="k">this</span><span class="p">.</span><span class="nf">dist</span><span class="p">(</span><span class="nx">cx</span><span class="p">,</span> <span class="nx">cy</span><span class="p">,</span> <span class="nx">testX</span><span class="p">,</span> <span class="nx">testY</span><span class="p">)</span>
+
+  <span class="c1">// if the distance is less than the radius, collision!</span>
+  <span class="k">if </span><span class="p">(</span><span class="nx">distance</span> <span class="o">&lt;=</span> <span class="nx">radius</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="kc">true</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="kc">false</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
 <h3 id="1-paddle">1. Paddle</h3>
 <h4 id="task-add-paddle-to-the-game">Task: Add paddle to the game</h4>
 

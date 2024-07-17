@@ -37,6 +37,89 @@ See the "Homework" section at the bottom of the animation tutorial.
 
 ### 0. Starter code
 
+```javascript
+// state
+let ballX
+let ballY
+let ballRadius = 30
+let xSpeed = 5
+let ySpeed = 5
+
+let SPACEBAR = 32
+let KEY_W = 87
+let KEY_S = 83
+
+function setup() {
+  createCanvas(400, 400)
+  
+  ballX = width / 2
+  ballY = height / 2 - 100
+}
+
+function draw() {
+  
+  stroke('white')
+  fill('white')
+  
+  // clear out old frames
+  background(32)
+
+  // draw current frame based on state
+  circle(ballX, ballY, ballRadius)
+
+  // modify state
+  ballX = ballX + xSpeed
+  ballY = ballY + ySpeed
+  
+  // ball hits left wall
+  if (ballX < 0) {
+    // bounce off
+    xSpeed = xSpeed * -1
+  }
+  
+  // ball hits right wall
+  if (ballX > width) {
+    // bounce off
+    xSpeed = xSpeed * -1
+  }
+
+  // bounce off top and bottom
+  if (ballY < 0 || ballY > height) {
+    ySpeed = ySpeed * -1
+  }
+}
+
+// https://github.com/bmoren/p5.collide2D/blob/master/p5.collide2d.js
+function collideRectCircle(rx, ry, rw, rh, cx, cy, radius) {
+  //2d
+  // temporary variables to set edges for testing
+  var testX = cx
+  var testY = cy
+
+  // which edge is closest?
+  if (cx < rx) {
+    testX = rx // left edge
+  } else if (cx > rx + rw) {
+    testX = rx + rw
+  } // right edge
+
+  if (cy < ry) {
+    testY = ry // top edge
+  } else if (cy > ry + rh) {
+    testY = ry + rh
+  } // bottom edge
+
+  // get distance from closest edges
+  var distance = this.dist(cx, cy, testX, testY)
+
+  // if the distance is less than the radius, collision!
+  if (distance <= radius) {
+    return true
+  }
+  return false
+}
+```
+
 ### 1. Paddle
 #### Task: Add paddle to the game
 
