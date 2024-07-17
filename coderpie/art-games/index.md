@@ -20,6 +20,6 @@ Instructor: Jeffrey Fisher
 
 - Draw
 - [Paint](paint)
-- Game: Pong
+- [Game: Pong](pong)
 - Game: Snake
 - Game: Fruit ninja

@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "coderpie/art-games/paint.md",
+                "file": "coderpie/art-games/pong.md",
                 "mode": "source",
                 "source": false
               }
@@ -81,7 +81,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 235.50152587890625,
+    "collapsed": true
   },
   "right": {
     "id": "30a622d87ef30034",
@@ -97,7 +98,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "coderpie/art-games/paint.md",
+                "file": "coderpie/art-games/pong.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +115,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "coderpie/art-games/paint.md",
+                "file": "coderpie/art-games/pong.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +138,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "coderpie/art-games/paint.md"
+                "file": "coderpie/art-games/pong.md"
               }
             }
           }
@@ -160,6 +161,15 @@
   },
   "active": "1954373b1e55b0c3",
   "lastOpenFiles": [
+    "_site/coderpie/art-games/pong.png",
+    "_site/coderpie/art-games/Pasted image 20240716205044.png",
+    "_site/Pasted image 20240716205044.png",
+    "coderpie/art-games/pong.png",
+    "coderpie/art-games/index.md",
+    "coderpie/art-games/pong.md",
+    "_site/coderpie/art-games/pong.html",
+    "_site/coderpie/art-games/pong.md",
+    "coderpie/art-games/paint.md",
     "_site/jekyll/update/2024/07/15/welcome-to-jekyll.html",
     "_site/jekyll/update/2024/07/15",
     "_site/jekyll/update/2024/07",
@@ -169,11 +179,7 @@
     "_site/coderpie/art-games/extra.html",
     "_site/jekyll/update",
     "_site/content/test.html",
-    "_site/coderpie/index.html",
-    "_site/coderpie/art-games",
     "_site/assets/minima-social-icons.svg",
-    "coderpie/art-games/index.md",
-    "coderpie/art-games/paint.md",
     "_site/coderpie/art-games/paint.md"
   ]
 }

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1"><!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Pong | Jeffrey Fisher</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Pong" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<meta property="og:description" content="Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description." />
+<link rel="canonical" href="/coderpie/art-games/pong.html" />
+<meta property="og:url" content="/coderpie/art-games/pong.html" />
+<meta property="og:site_name" content="Jeffrey Fisher" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Pong" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.","headline":"Pong","url":"/coderpie/art-games/pong.html"}</script>
+<!-- End Jekyll SEO tag -->
+<link rel="stylesheet" href="/assets/main.css"><link type="application/atom+xml" rel="alternate" href="/feed.xml" title="Jeffrey Fisher" /></head>
+<body><header class="site-header" role="banner">
+
+  <div class="wrapper"><a class="site-title" rel="author" href="/">Jeffrey Fisher</a><nav class="site-nav">
+        <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+        <label for="nav-trigger">
+          <span class="menu-icon">
+            <svg viewBox="0 0 18 15" width="18px" height="15px">
+              <path d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.032C17.335,0,18,0.665,18,1.484L18,1.484z M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.032C17.335,6.031,18,6.696,18,7.516L18,7.516z M18,13.516C18,14.335,17.335,15,16.516,15H1.484 C0.665,15,0,14.335,0,13.516l0,0c0-0.82,0.665-1.483,1.484-1.483h15.032C17.335,12.031,18,12.695,18,13.516L18,13.516z"/>
+            </svg>
+          </span>
+        </label>
+
+        <div class="trigger"><a class="page-link" href="/about/">About</a><a class="page-link" href="/coderpie/">CoderPie</a></div>
+      </nav></div>
+</header>
+<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Pong</h1>
+  </header>
+
+  <div class="post-content">
+    <p><img src="pong.png" alt="" /></p>
+
+<p>We will be making a version of the classic game “Pong”.</p>
+
+<h2 id="1-animation">1. Animation</h2>
+
+<p>Animation fundamentals tutorial: <a href="https://happycoding.io/tutorials/p5js/animation">https://happycoding.io/tutorials/p5js/animation</a></p>
+
+<blockquote>
+  <p>Note: Middle click (click with the scroll wheel on the mouse) or right click and then select “Open in new tab” can be used to open links without losing this page.</p>
+</blockquote>
+
+<ol>
+  <li>Open up the <code class="language-plaintext highlighter-rouge">p5.js</code> code editor (<a href="https://editor.p5js.org/">https://editor.p5js.org/</a>).</li>
+  <li>Log in, if you are not already
+    <ul>
+      <li>If you need to log in, click “Log In” in the top right corner.</li>
+      <li>On the next page, click the log in with <strong>Google</strong> button</li>
+    </ul>
+  </li>
+  <li>Rename your project to “animation (&lt;YOUR NAME HERE&gt;)”</li>
+  <li>Save your project (File &gt; Save, or Control+s).
+    <ul>
+      <li>Make sure to save every few minutes or so, so that your code doesn’t get lost.</li>
+    </ul>
+  </li>
+</ol>
+
+<p>Now read and work through the animation tutorial. Raise your hand / get my attention if you have a question or want help.</p>
+
+<h3 id="exercises">Exercises</h3>
+<p>See the “Homework” section at the bottom of the animation tutorial.</p>
+
+<ol>
+  <li>Complete the gravity exercise</li>
+</ol>
+
+<h3 id="optional-cool-things-to-try">(optional) Cool things to try</h3>
+<ul>
+  <li>Leave an after-image trail of the ball: change the background call to be: <code class="language-plaintext highlighter-rouge">background(32, 20)</code>
+    <ul>
+      <li>The first argument (32) is the color, the second argument (20) is the transparency value, which ranges from 0 to 255.</li>
+      <li>Each repaint of the background covers up a little bit more of the old frames.</li>
+      <li><code class="language-plaintext highlighter-rouge">background(32, 255)</code> has the same behavior as <code class="language-plaintext highlighter-rouge">background(32)</code></li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="2-pong">2. Pong</h2>
+
+<p>TODO (for Jeffrey):</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Starter code
+    <ul class="task-list">
+      <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Include function for detecting collision between rectangle and circle</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="exercises-1">Exercises</h3>
+
+<ul>
+  <li>Draw a line down the middle of the screen, to visually divide the sides.
+    <ul>
+      <li>Use the <code class="language-plaintext highlighter-rouge">p5.js</code> <a href="https://p5js.org/reference/p5/line/">line()</a> function.</li>
+      <li>Hint: While you can always look at the size of the canvas in <code class="language-plaintext highlighter-rouge">createCanvas()</code> and calculate the middle by hand, the variables <code class="language-plaintext highlighter-rouge">height</code> and <code class="language-plaintext highlighter-rouge">width</code> contain the canvas dimensions, so you can use those to calculate the middle regardless of how big the canvas is.</li>
+      <li>Hint: Division can be done with <code class="language-plaintext highlighter-rouge">/</code> (forward slash). Example: <code class="language-plaintext highlighter-rouge">10 / 5</code> means “10 divided by 5”.</li>
+    </ul>
+  </li>
+  <li>Add a second paddle and score count to make it a two-player game.</li>
+</ul>
+
+  </div>
+
+</article>
+
+      </div>
+    </main><footer class="site-footer h-card">
+  <data class="u-url" href="/"></data>
+
+  <div class="wrapper">
+
+    <h2 class="footer-heading">Jeffrey Fisher</h2>
+
+    <div class="footer-col-wrapper">
+      <div class="footer-col footer-col-1">
+        <ul class="contact-list">
+          <li class="p-name">Jeffrey Fisher</li><li><a class="u-email" href="mailto:your-email@example.com">your-email@example.com</a></li></ul>
+      </div>
+
+      <div class="footer-col footer-col-2"><ul class="social-media-list"><li><a href="https://github.com/jekyll"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#github"></use></svg> <span class="username">jekyll</span></a></li><li><a href="https://www.twitter.com/jekyllrb"><svg class="svg-icon"><use xlink:href="/assets/minima-social-icons.svg#twitter"></use></svg> <span class="username">jekyllrb</span></a></li></ul>
+</div>
+
+      <div class="footer-col footer-col-3">
+        <p>Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description.</p>
+      </div>
+    </div>
+
+  </div>
+
+</footer>
+</body>
+
+</html>

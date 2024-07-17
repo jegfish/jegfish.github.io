@@ -30,6 +30,7 @@ If you feel ready to jump in, go ahead. If you're making progress, keep going. B
 	- Don't know where to start
 		- Then, rewrite the original goals / problem statement in your own words. Break it down, identify which parts you understand and which parts you don't understand.
 5. Ask for help
+
 ### Useful features and functions
 
 - Documentation: <https://p5js.org/reference/>
