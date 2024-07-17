@@ -6,7 +6,7 @@ title: Pong
 
 We will be making a version of the classic game "Pong".
 
-## 1. Animation
+## A. Animation
 
 Animation fundamentals tutorial: <https://happycoding.io/tutorials/p5js/animation>
 
@@ -33,11 +33,97 @@ See the "Homework" section at the bottom of the animation tutorial.
 	- Each repaint of the background covers up a little bit more of the old frames.
 	- `background(32, 255)` has the same behavior as `background(32)`
 
-## 2. Pong
+## B. Pong
 
-TODO (for Jeffrey):
-- [ ] Starter code
-	- [ ] Include function for detecting collision between rectangle and circle
+### 0. Starter code
+
+### 1. Paddle
+#### Task: Add paddle to the game
+
+State (variables):
+- position
+	- [ ] Define variable: `paddleX`
+	- [ ] Define variable: `paddleY`
+- size
+	- [ ] Define variable: `paddleWidth`
+	- [ ] Define variable: `paddleHeight`
+- [ ] Define variable: `paddlespeed`
+- [ ] Initialize all these variables
+
+Visual:
+- [ ] draw a rectangle using the paddle variables and the [rect()](https://p5js.org/reference/p5/rect) `p5.js` function
+
+### 2. Keyboard input
+
+Available keys:
+- `SPACEBAR`
+- `KEY_W`
+- `KEY_S`
+- `UP_ARROW`
+- `DOWN_ARROW`
+- `LEFT_ARROW`
+  `RIGHT_ARROW`
+
+> Note: If you want to use additional keys, let me know and I'll show you how.
+
+#### Checking if a key is pressed
+
+We use the [keyIsDown()](https://p5js.org/reference/p5/keyIsDown/) function from `p5.js`. It takes one argument/parameter, which is a "key code". An example key code is 32, which means spacebar. This would be ridiculous to remember, so there are some (all-caps) variables already available to you for certain keys.
+
+Example:
+```javascript
+if (keyIsDown(KEY_W)) {
+  // ...
+}
+```
+
+Checking for keyboard input needs to go in the `draw()` function.
+
+#### Task: Move paddle with keyboard input
+
+- [ ] Paddle up
+	- Write an if statement to check if the 'w' key is pressed.
+	- When the 'w' key is pressed, move the paddle upwards.
+	- Note: Remember we have the `paddleSpeed` variable.
+	- **Hint:** You saw how to move a game object by updating its state in the [animation tutorial](https://happycoding.io/tutorials/p5js/animation).
+- [ ] Paddle down
+	- Write an if statement to check if the 's' key is pressed.
+	- When the 's' key is pressed, move the paddle downwards.
+
+### 3. Collision detection
+
+I've provided a function in the starter code called `collideRectCircle()`. It returns true or false (so we can use in the condition of an if statement) based on whether a rectangle and a circle are colliding (touching).
+
+Template: `collideRectCircle(rectX, rectY, rectWidth, rectHeight, circleX, circleY, circleRadius)`
+
+#### Task: Detect collisions between paddle and ball
+
+- [ ] Write an if statement to check if the paddle is colliding with the ball
+- [ ] In that if statement, bounce the ball
+	- **Hint:** Which way/how should we bounce it? Look at the different ways we bounce depending on which wall the ball touched. Which way should we use for the paddle?
+
+### 4. Displaying score
+
+State (variables):
+- [ ] Define variable: `score`, initialize it to zero
+
+Visual:
+
+```javascript
+textSize(25)
+text(score, 30, 30)
+```
+
+The `text()` function template is: `text(message, x, y)`.
+
+The text function allows us to draw text on screen. In this case, the text is a number, the current score value.
+
+### 5. Tracking score
+
+#### Task: Track score
+
+- [ ] When the ball hits the left wall, decrease the score by 1
+	- Eventually you can change this to increase the opponent's score by 1, if you complete the two-player version.
 
 ### Exercises
 
@@ -45,4 +131,9 @@ TODO (for Jeffrey):
 	- Use the `p5.js` [line()](https://p5js.org/reference/p5/line/) function.
 	- Hint: While you can always look at the size of the canvas in `createCanvas()` and calculate the middle by hand, the variables `height` and `width` contain the canvas dimensions, so you can use those to calculate the middle regardless of how big the canvas is.
 	- Hint: Division can be done with `/` (forward slash). Example: `10 / 5` means "10 divided by 5".
-- Add a second paddle and score count to make it a two-player game.
+- Add a second paddle and second score counter to make it a two-player game.
+- Or do single player:
+	- Increase the score by 1 when the ball collides with the paddle
+- Make the game harder over time. Ideas:
+	- Make the ball speed get faster as the score gets larger
+	- Make the paddle smaller as the score gets larger

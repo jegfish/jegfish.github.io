@@ -47,7 +47,7 @@
 
 <p>We will be making a version of the classic game “Pong”.</p>
 
-<h2 id="1-animation">1. Animation</h2>
+<h2 id="a-animation">A. Animation</h2>
 
 <p>Animation fundamentals tutorial: <a href="https://happycoding.io/tutorials/p5js/animation">https://happycoding.io/tutorials/p5js/animation</a></p>
 
@@ -91,13 +91,126 @@
   </li>
 </ul>
 
-<h2 id="2-pong">2. Pong</h2>
+<h2 id="b-pong">B. Pong</h2>
 
-<p>TODO (for Jeffrey):</p>
+<h3 id="0-starter-code">0. Starter code</h3>
+
+<h3 id="1-paddle">1. Paddle</h3>
+<h4 id="task-add-paddle-to-the-game">Task: Add paddle to the game</h4>
+
+<p>State (variables):</p>
 <ul class="task-list">
-  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Starter code
+  <li>position
     <ul class="task-list">
-      <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Include function for detecting collision between rectangle and circle</li>
+      <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Define variable: <code class="language-plaintext highlighter-rouge">paddleX</code></li>
+      <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Define variable: <code class="language-plaintext highlighter-rouge">paddleY</code></li>
+    </ul>
+  </li>
+  <li>size
+    <ul class="task-list">
+      <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Define variable: <code class="language-plaintext highlighter-rouge">paddleWidth</code></li>
+      <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Define variable: <code class="language-plaintext highlighter-rouge">paddleHeight</code></li>
+    </ul>
+  </li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Define variable: <code class="language-plaintext highlighter-rouge">paddlespeed</code></li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Initialize all these variables</li>
+</ul>
+
+<p>Visual:</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />draw a rectangle using the paddle variables and the <a href="https://p5js.org/reference/p5/rect">rect()</a> <code class="language-plaintext highlighter-rouge">p5.js</code> function</li>
+</ul>
+
+<h3 id="2-keyboard-input">2. Keyboard input</h3>
+
+<p>Available keys:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">SPACEBAR</code></li>
+  <li><code class="language-plaintext highlighter-rouge">KEY_W</code></li>
+  <li><code class="language-plaintext highlighter-rouge">KEY_S</code></li>
+  <li><code class="language-plaintext highlighter-rouge">UP_ARROW</code></li>
+  <li><code class="language-plaintext highlighter-rouge">DOWN_ARROW</code></li>
+  <li><code class="language-plaintext highlighter-rouge">LEFT_ARROW</code>
+<code class="language-plaintext highlighter-rouge">RIGHT_ARROW</code></li>
+</ul>
+
+<blockquote>
+  <p>Note: If you want to use additional keys, let me know and I’ll show you how.</p>
+</blockquote>
+
+<h4 id="checking-if-a-key-is-pressed">Checking if a key is pressed</h4>
+
+<p>We use the <a href="https://p5js.org/reference/p5/keyIsDown/">keyIsDown()</a> function from <code class="language-plaintext highlighter-rouge">p5.js</code>. It takes one argument/parameter, which is a “key code”. An example key code is 32, which means spacebar. This would be ridiculous to remember, so there are some (all-caps) variables already available to you for certain keys.</p>
+
+<p>Example:</p>
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if </span><span class="p">(</span><span class="nf">keyIsDown</span><span class="p">(</span><span class="nx">KEY_W</span><span class="p">))</span> <span class="p">{</span>
+  <span class="c1">// ...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Checking for keyboard input needs to go in the <code class="language-plaintext highlighter-rouge">draw()</code> function.</p>
+
+<h4 id="task-move-paddle-with-keyboard-input">Task: Move paddle with keyboard input</h4>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Paddle up
+    <ul>
+      <li>Write an if statement to check if the ‘w’ key is pressed.</li>
+      <li>When the ‘w’ key is pressed, move the paddle upwards.</li>
+      <li>Note: Remember we have the <code class="language-plaintext highlighter-rouge">paddleSpeed</code> variable.</li>
+      <li><strong>Hint:</strong> You saw how to move a game object by updating its state in the <a href="https://happycoding.io/tutorials/p5js/animation">animation tutorial</a>.</li>
+    </ul>
+  </li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Paddle down
+    <ul>
+      <li>Write an if statement to check if the ‘s’ key is pressed.</li>
+      <li>When the ‘s’ key is pressed, move the paddle downwards.</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="3-collision-detection">3. Collision detection</h3>
+
+<p>I’ve provided a function in the starter code called <code class="language-plaintext highlighter-rouge">collideRectCircle()</code>. It returns true or false (so we can use in the condition of an if statement) based on whether a rectangle and a circle are colliding (touching).</p>
+
+<p>Template: <code class="language-plaintext highlighter-rouge">collideRectCircle(rectX, rectY, rectWidth, rectHeight, circleX, circleY, circleRadius)</code></p>
+
+<h4 id="task-detect-collisions-between-paddle-and-ball">Task: Detect collisions between paddle and ball</h4>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Write an if statement to check if the paddle is colliding with the ball</li>
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />In that if statement, bounce the ball
+    <ul>
+      <li><strong>Hint:</strong> Which way/how should we bounce it? Look at the different ways we bounce depending on which wall the ball touched. Which way should we use for the paddle?</li>
+    </ul>
+  </li>
+</ul>
+
+<h3 id="4-displaying-score">4. Displaying score</h3>
+
+<p>State (variables):</p>
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />Define variable: <code class="language-plaintext highlighter-rouge">score</code>, initialize it to zero</li>
+</ul>
+
+<p>Visual:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">textSize</span><span class="p">(</span><span class="mi">25</span><span class="p">)</span>
+<span class="nf">text</span><span class="p">(</span><span class="nx">score</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">text()</code> function template is: <code class="language-plaintext highlighter-rouge">text(message, x, y)</code>.</p>
+
+<p>The text function allows us to draw text on screen. In this case, the text is a number, the current score value.</p>
+
+<h3 id="5-tracking-score">5. Tracking score</h3>
+
+<h4 id="task-track-score">Task: Track score</h4>
+
+<ul class="task-list">
+  <li class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" disabled="disabled" />When the ball hits the left wall, decrease the score by 1
+    <ul>
+      <li>Eventually you can change this to increase the opponent’s score by 1, if you complete the two-player version.</li>
     </ul>
   </li>
 </ul>
@@ -112,7 +225,18 @@
       <li>Hint: Division can be done with <code class="language-plaintext highlighter-rouge">/</code> (forward slash). Example: <code class="language-plaintext highlighter-rouge">10 / 5</code> means “10 divided by 5”.</li>
     </ul>
   </li>
-  <li>Add a second paddle and score count to make it a two-player game.</li>
+  <li>Add a second paddle and second score counter to make it a two-player game.</li>
+  <li>Or do single player:
+    <ul>
+      <li>Increase the score by 1 when the ball collides with the paddle</li>
+    </ul>
+  </li>
+  <li>Make the game harder over time. Ideas:
+    <ul>
+      <li>Make the ball speed get faster as the score gets larger</li>
+      <li>Make the paddle smaller as the score gets larger</li>
+    </ul>
+  </li>
 </ul>
 
   </div>
