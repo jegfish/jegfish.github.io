@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   Unfinished time tracker app
+  </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/simple.css">
+  <link rel="stylesheet" href="/pygments.css">
+  <link rel="stylesheet" href="/style.css">
+ </head>
+ <body>
+  <header>
+   <nav>
+    <a href="/">Home</a>
+      <a href="/a">Articles</a>
+      <a aria-current="page" href="/projects">Projects</a>
+   </nav>
+   <h1 id="title">
+    Unfinished time tracker app
+   </h1>
+   <div id="subtitle">
+    Planned name: Fractime
+   </div>
+  </header>
+  <main>
+   <p></p>
+   <h2 id="overview">
+    Overview
+   </h2>
+   <ul>
+    <li>
+     <a href="/fractime">Try the demo</a>
+    </li>
+    <li>
+     Source code: <a href="https://github.com/jegfish/fractime" class="uri">https://github.com/jegfish/fractime</a>
+    </li>
+    <li>
+     Technology stack:
+     <ul>
+      <li>
+       React
+      </li>
+      <li>
+       <a href="https://rxdb.info/">RxDB</a> for offline in-browser
+storage
+      </li>
+     </ul>
+    </li>
+   </ul>
+   <h2 id="feature-list">
+    Feature list
+   </h2>
+   <ul>
+    <li>
+     Stopwatch-style timer
+    </li>
+    <li>
+     Tagging
+     <ul>
+      <li>
+       Create a tag with “Add tag”.
+      </li>
+      <li>
+       Click on a tag to select it for the current timer.
+      </li>
+     </ul>
+    </li>
+    <li>
+     Sticky tags
+     <ul>
+      <li>
+       Click on a tag’s checkbox to set it to sticky mode. It will stay on
+between timer start/stop.
+      </li>
+      <li>
+       An example use case is you have a main “work” tag, then other tags
+to describe specific tasks like “research” or “email”. You can set the
+work tag to sticky so you don’t need to reselect it when you switch
+tasks.
+      </li>
+     </ul>
+    </li>
+    <li>
+     Offline storage in the browser. Saves the active timer, past timers,
+and tags.
+    </li>
+    <li>
+     Accumulate break time as a fraction of active time. For example for
+every 3 minutes you log on the timer, you save up one minute of break
+time.
+     <ul>
+      <li>
+       This is inspired by <a href="https://www.lesswrong.com/posts/RWu8eZqbwgB9zaerh/third-time-a-better-way-to-work">Third
+Time</a>.
+      </li>
+     </ul>
+    </li>
+   </ul>
+  </main>
+ </body>
+</html>
