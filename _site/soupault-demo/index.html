@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   Soupault demo
+  </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/simple.css">
+  <link rel="stylesheet" href="/pygments.css">
+  <link rel="stylesheet" href="/style.css">
+ </head>
+ <body>
+  <header>
+   <nav>
+    <a href="/">Home</a>
+      <a href="/a">Articles</a>
+      <a href="/projects">Projects</a>
+   </nav>
+   <h1 id="title">
+    Soupault demo
+   </h1>
+   <div id="subtitle">
+    scratch space, and demo of features of this site’s static
+site generator
+   </div>
+  </header>
+  <main>
+   <p></p>
+   <p>
+    This site is built with <a href="https://soupault.app">Soupault</a>,
+and some custom Soupault plugins.
+   </p>
+   <p>
+    <time id="post-created">1970-01-01</time><br>
+<time id="post-updated">2025-04-01</time>
+   </p>
+   <p>
+    I’ve been using the fish shell.
+   </p>
+   <p>
+    I like that it has a lot of features built-in, so that I don’t need
+to install any extensions.
+   </p>
+   <p>
+    em dash—hi—.
+   </p>
+   <p>
+    quotes “hi”
+   </p>
+   <p>
+    3'2"
+   </p>
+   <p>
+    <math display="block" xmlns="http://www.w3.org/1998/Math/MathML">
+     <semantics>
+      <mrow>
+       <munderover>
+        <mo>
+         ∑
+        </mo>
+        <mrow>
+         <mi>
+          i
+         </mi>
+         <mo>
+          =
+         </mo>
+         <mn>
+          1
+         </mn>
+        </mrow>
+        <mi>
+         n
+        </mi>
+       </munderover>
+       <msup>
+        <mi>
+         i
+        </mi>
+        <mn>
+         2
+        </mn>
+       </msup>
+      </mrow>
+      <annotation encoding="application/x-tex">
+       \sum_{i=1}^n i^2
+      </annotation>
+     </semantics>
+    </math>
+   </p>
+   <div class="sourceCode" id="cb1">
+    <pre class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pygments.styles <span class="im">import</span> get_style_by_name</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pygments.formatters <span class="im">import</span> HtmlFormatter</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> foo(x: <span class="bu">str</span>):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"hello world"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    foo(bar)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="dv">2</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># What about a really long line that just keeps going? Do we have horizontal scroll support?</span></span></code></pre>
+   </div>
+   <p>
+    More text, let’s try to get some scrolling.
+   </p>
+   <p>
+    Lorem ipsum dolor sit amet.
+   </p>
+  </main>
+ </body>
+</html>
