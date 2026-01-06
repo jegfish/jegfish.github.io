@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title>
+   Google Maps Link Maker
+  </title>
+  <script src="./script.js"></script>
+  <style>
+   ol#output {
+      list-style-type: disc;
+    }
+  </style>
+ </head>
+ <body>
+  <h1>
+   Google Maps Link Maker
+  </h1>
+  <p>
+   There is a limit of 10 destinations per Google Maps route link. This tool works around that
+    limit.
+  </p>
+  <p>
+   Enter one location per line. Starting point will be your current location. Usually you will
+    enter an address, but theoretically GPS coordinates and sometimes names of locations will work.
+  </p>
+  <p>
+   Data will not be saved if the tab closes or reloads, so you should prepare your destinations
+    somewhere else like Notepad where your work is saved, then copy it here.
+  </p>
+  <p>
+   Destinations:
+  </p>
+  <textarea id="input-destinations" wrap="off" rows="10" cols="40"></textarea>
+
+  <br>
+  <button id="generate">Generate</button>
+  <p>
+   Output:
+  </p>
+  <ol id="output"></ol>
+ </body>
+</html>
